@@ -1,0 +1,2 @@
+Invalid input
+Usage: flipbyte.exe <number>
