@@ -65,7 +65,7 @@ Errors ParseArguments(int argc, char** arguments, int &number)
     }
 }
 
-void ShowErrors(Errors errorParsedArguments)
+void ShowError(Errors errorParsedArguments)
 {
     //Проверка количества агументов командной строки
     if (errorParsedArguments == TOO_FEW_ARGUMENTS)
@@ -98,7 +98,7 @@ int main(int argc, char** argv)
         cout << number << endl;
     }
     else {
-        ShowErrors(errorParsedArguments);
+        ShowError(errorParsedArguments);
         return 1;
     }
  
