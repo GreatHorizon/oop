@@ -17,7 +17,7 @@ enum Errors
     TOO_FEW_ARGUMENTS
 };
 
-int Reverse(int x)
+int ReverseByte(int x)
 {
     int base = 128;
     int res = 0;
@@ -65,7 +65,7 @@ Errors ParseArguments(int argc, char** arguments, int &number)
     }
 }
 
-void showErrors(Errors errorParsedArguments)
+void ShowErrors(Errors errorParsedArguments)
 {
     //Проверка количества агументов командной строки
     if (errorParsedArguments == TOO_FEW_ARGUMENTS)
@@ -94,11 +94,11 @@ int main(int argc, char** argv)
     if (errorParsedArguments == THERE_ARE_NOT_ERRORS)
     { 
         //Получаем число путем изменения порядка битов на обратный
-        number = Reverse(number);
+        number = ReverseByte(number);
         cout << number << endl;
     }
     else {
-        showErrors(errorParsedArguments);
+        ShowErrors(errorParsedArguments);
         return 1;
     }
  
