@@ -51,5 +51,8 @@
     <Text Include="lower_limit.txt">
       <Filter>Tests</Filter>
     </Text>
+    <Text Include="number_from_gap.txt">
+      <Filter>Tests</Filter>
+    </Text>
   </ItemGroup>
 </Project>

@@ -38,6 +38,11 @@ REM Меньше нижнего предела
 fc Tests\below_than_lower_limit.txt "%TEMP%\out.txt" || goto err2
 echo test 6 passed successfuly
 
+REM Промежуточное значение
+%MyProgram% 6 > "%TEMP%\out.txt" || goto err1
+fc Tests\number_from_gap.txt "%TEMP%\out.txt" || goto err2
+echo test 7 passed successfuly
+
 
 echo all tests have passed successfuly
 exit /B 0

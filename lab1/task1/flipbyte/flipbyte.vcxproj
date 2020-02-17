@@ -180,6 +180,12 @@
     <Text Include="is_not_a_digit.txt" />
     <Text Include="lower_limit.txt" />
     <Text Include="more_than_upper_limit.txt" />
+    <Text Include="number_from_gap.txt">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|Win32'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">false</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Release|x64'">false</ExcludedFromBuild>
+    </Text>
     <Text Include="tests\one_argument.txt" />
     <Text Include="upper_limit.txt" />
   </ItemGroup>
