@@ -4,6 +4,31 @@ using namespace std;
 #include <string>
 #include <fstream>
 #include <stdio.h>
+#include <optional>
+
+
+struct Args
+{
+	string inputFileName;
+	string outputFileName;
+	string searchString;
+	string replaceString;
+};
+
+optional<Args> ParseArguments(int argc, char** argv)
+{
+	if (argc != 5)
+	{
+		return nullopt;
+	}
+
+	Args args;
+	args.inputFileName = argv[1];
+	args.outputFileName = argv[2];
+	args.replaceString = argv[3];
+	args.searchString = argv[4];
+	return args;
+}
 
 string ReplaceString(const std::string& subject,
 	const std::string& searchString, const std::string& replacementString)
@@ -38,24 +63,37 @@ void CopyFileWithReplace(std::istream& input, std::ostream& output,
 	}
 }
 
-int main(int argc, char* argv[])
+int main(int argc, char** argv)
 {
-	
-	if (argc != 5)
+	optional args = ParseArguments(argc, argv);
+
+	if (!args)
 	{
 		cout << "Invalid argument count\n";
 		cout <<"Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>\n";
+		return 1;
 	}
 
 	ifstream inputFile;
-	inputFile.open(argv[1]);
-
 	ofstream outputFile;
-	outputFile.open(argv[2]);
 
+	inputFile.open(args->inputFileName);
+	outputFile.open(args->outputFileName);
 
-	string search = argv[3];
-	string replace = argv[4];
+	if (!inputFile.is_open())
+	{
+		cout << "Failed to open " << args->inputFileName << " for reading" << endl;
+		return 1;
+	}
+
+	if (!outputFile.is_open())
+	{
+		cout << "Failed to open " << args->outputFileName << " for w" << endl;
+		return 1;
+	}
+
+	string search = args->searchString;
+	string replace = args->replaceString;
 
 
 	CopyFileWithReplace(inputFile, outputFile, search, replace);
