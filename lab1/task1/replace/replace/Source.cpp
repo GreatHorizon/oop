@@ -14,11 +14,9 @@ struct Args
 	string replaceString;
 };
 
-enum Error {
-	TOO_FEW_ARGUMENTS,
-	INPUT_FILE_OPENING_ERROR,
-	OUTPUT_FILE_OPENING_ERROR,
-	THERE_IS_NOT_ERROR,
+enum State {
+	CHECK_BEFORE_COPYING,
+	CHECK_AFTER_COPYING,
 };
 
 optional<Args> ParseArguments(int argc, char** argv)
@@ -31,21 +29,25 @@ optional<Args> ParseArguments(int argc, char** argv)
 	Args args;
 	args.inputFileName = argv[1];
 	args.outputFileName = argv[2];
-	args.replaceString = argv[3];
-	args.searchString = argv[4];
+	args.searchString = argv[3];
+	args.replaceString = argv[4];
+	
+
 	return args;
 }
 
-string ReplaceString(const std::string& subject,
-	const std::string& searchString, const std::string& replacementString)
+string ReplaceString(const string& subject,
+	const string& searchString, const string& replacementString)
 {
 	size_t pos = 0;
-	std::string result;
+	string result;
+
 	while (pos < subject.length())
 	{
 		size_t foundPos = subject.find(searchString, pos);
 		result.append(subject, pos, foundPos - pos);
-		if (foundPos != std::string::npos)
+
+		if (foundPos != string::npos)
 		{
 			result.append(replacementString);
 			pos = foundPos + searchString.length();
@@ -55,81 +57,116 @@ string ReplaceString(const std::string& subject,
 			break;
 		}
 	}
+
 	return result;
 }
 
-void CopyFileWithReplace(std::istream& input, std::ostream& output,
-	const std::string& searchString, const std::string& replacementString)
+void CopyFileWithReplace(istream& input, ostream& output, 
+	const string& searchString, const string& replacementString)
 {
-	std::string line;
+	string line;
 
-	while (std::getline(input, line))
+	while (getline(input, line))
 	{
-		output << ReplaceString(line, searchString, replacementString) << "\n";
+		output << ReplaceString(line, searchString, replacementString) << endl;
 	}
 }
 
+//void ShowError(Error error, optional<Args> args)
+//{
+//	if (error == TOO_FEW_ARGUMENTS)
+//	{
+//		cout << "Invalid argument count\n";
+//		cout << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>\n";
+//		return;
+//	}
+//
+//	if (error == INPUT_FILE_OPENING_ERROR)
+//	{
+//		cout << "Failed to open " << args->inputFileName << " for reading" << endl;
+//		return;
+//	}
+//
+//	if (error == OUTPUT_FILE_OPENING_ERROR)
+//	{
+//		cout << "Failed to open " << args->outputFileName << " for writing" << endl;
+//		return;
+//	}
+//
+//	if (error == SEARCH_STRING_IS_EMPRY)
+//	{
+//		cout << "<searchString> should not be empty" << endl;
+//		return;
+//	}
+//}
 
-void ShowEror(Error error, optional<Args> args)
+bool checkFilesAndShowErrors(optional<Args> args, ifstream& inputFile, ofstream& outputFile, State state)
 {
-	if (error == TOO_FEW_ARGUMENTS)
+	if (state == CHECK_BEFORE_COPYING)
 	{
-		cout << "Invalid argument count\n";
-		cout << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>\n";
-		return;
+		if (!args)
+		{
+			cout << "Invalid argument count"<< endl;
+			cout << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>" << endl;
+			return false;
+		}
+
+		if (args->searchString.empty())
+		{
+			cout << "<searchString> should not be empty" << endl;
+			return false;
+		}
+
+		inputFile.open(args->inputFileName);
+		outputFile.open(args->outputFileName);
+
+		if (!inputFile.is_open())
+		{
+			cout << "Failed to open " << args->inputFileName << " for reading" << endl;
+			return false;
+		}
+
+		if (!outputFile.is_open())
+		{
+			cout << "Failed to open " << args->outputFileName << " for writing" << endl;
+			return false;
+		}
+	}
+	else
+	{
+		if (inputFile.bad())
+		{
+			cout << "Failed to read data from input file" << endl;
+			return false;
+		}
+
+		if (!outputFile.flush())
+		{
+			cout << "Failed to write data in output file" << endl;
+			return false;
+		}
 	}
 
-	if (error == INPUT_FILE_OPENING_ERROR)
-	{
-		cout << "Failed to open " << args->inputFileName << " for reading" << endl;
-		return;
-	}
-
-	if (error == OUTPUT_FILE_OPENING_ERROR)
-	{
-		cout << "Failed to open " << args->outputFileName << " for writing" << endl;
-		return;
-	}
+	return true;
 }
-
 
 int main(int argc, char** argv)
 {
 	optional args = ParseArguments(argc, argv);
-
-	if (!args)
-	{
-		ShowEror(TOO_FEW_ARGUMENTS, args);
-		return 1;
-	}
-
 	ifstream inputFile;
 	ofstream outputFile;
 
-	inputFile.open(args->inputFileName);
-	outputFile.open(args->outputFileName);
-
-	if (!inputFile.is_open())
+	if (!checkFilesAndShowErrors(args, inputFile, outputFile, CHECK_BEFORE_COPYING))
 	{
-		ShowEror(INPUT_FILE_OPENING_ERROR, args);
 		return 1;
 	}
 
-	if (!outputFile.is_open())
+	CopyFileWithReplace(inputFile, outputFile, args->searchString, args->replaceString);
+
+	if (!checkFilesAndShowErrors(args, inputFile, outputFile, CHECK_AFTER_COPYING))
 	{
-		ShowEror(OUTPUT_FILE_OPENING_ERROR, args);
 		return 1;
 	}
-
-	string search = args->searchString;
-	string replace = args->replaceString;
-
-	CopyFileWithReplace(inputFile, outputFile, search, replace);
-	outputFile.flush();
-
-	/*string s = "LateToStayHere";
-	size_t foundPos = s.find("Lafte", 0);
-	cout << foundPos;*/
 
 	return 0;
 }

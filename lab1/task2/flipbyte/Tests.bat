@@ -9,7 +9,7 @@ if %MyProgram%=="" (
 )
 
 REM Ќедостаточное количество аргументов
-%MyProgram% > "%TEMP%\out.txt" && goto err1
+%MyProgram% > "%TEMP%\out.txt" && goto err
 fc Tests\one_argument.txt "%TEMP%\out.txt" || goto err2
 echo test 1 passed successfuly
 

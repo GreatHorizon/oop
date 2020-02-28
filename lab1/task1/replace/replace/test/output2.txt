@@ -1,0 +1,1 @@
+<searchString> should not be empty
