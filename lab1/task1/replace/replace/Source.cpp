@@ -32,7 +32,6 @@ optional<Args> ParseArguments(int argc, char** argv)
 	args.searchString = argv[3];
 	args.replaceString = argv[4];
 	
-
 	return args;
 }
 
@@ -40,20 +39,22 @@ string ReplaceString(const string& subject,
 	const string& searchString, const string& replacementString)
 {
 	size_t pos = 0;
+	size_t foundPos = 0;
 	string result;
 
 	while (pos < subject.length())
 	{
-		size_t foundPos = subject.find(searchString, pos);
-		result.append(subject, pos, foundPos - pos);
-
+		foundPos = subject.find(searchString, pos);
+		
 		if (foundPos != string::npos)
-		{
+		{	
+			result.append(subject, pos, foundPos - pos);
 			result.append(replacementString);
 			pos = foundPos + searchString.length();
 		}
 		else
 		{
+			result.append(subject, pos, subject.length() - pos);
 			break;
 		}
 	}
