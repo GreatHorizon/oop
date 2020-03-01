@@ -10,7 +10,6 @@ struct Arguments
 	string inputFileName;
 };
 
-
 enum Errors {
 	INPUT_FILE_WASNT_OPENED,
 	INCORRECT_MATRIX,
@@ -21,7 +20,6 @@ const int MINOR_SIZE = 2;
 
 typedef float Matrix[MATRIX_SIZE][MATRIX_SIZE];
 typedef float MinorMatrix[MINOR_SIZE][MINOR_SIZE];
-
 
 optional <Arguments> GetArguments(int argc, char** argv)
 {
@@ -34,7 +32,6 @@ optional <Arguments> GetArguments(int argc, char** argv)
 
 	Arguments arg;
 	arg.inputFileName = argv[1];
-	 
 	return arg;
 }
 
@@ -88,11 +85,11 @@ float GetMinor(const Matrix matrix, int row, int column)
 			minorMatrix[minorMatrixRow][minorMatrixColumn] = matrix[i][j];
 			minorMatrixColumn++;
 		}
+
 		minorMatrixRow++;
 	}
 
 	minor = minorMatrix[0][0] * minorMatrix[1][1] - minorMatrix[0][1] * minorMatrix[1][0];
-
 	return minor;
 }
 float GetDeterminant(const Matrix matrix) {
@@ -112,6 +109,7 @@ float GetDeterminant(const Matrix matrix) {
 void GetIntermediaryMatrix(Matrix& intermediaryMatrix, Matrix originalMatrix)
 {
 	int index = 1;
+
 	for (int i = 0; i < MATRIX_SIZE; i++)
 	{
 		for (int j = 0; j < MATRIX_SIZE; j++)
@@ -137,6 +135,7 @@ void getInversedMatrix(const Matrix intermediaryMatrix, Matrix& resultMatrix, fl
 bool InverseMatrix(Matrix& matrix)
 {
 	float determinant; 
+
 	determinant = GetDeterminant(matrix);
 	if (determinant == 0)
 	{
