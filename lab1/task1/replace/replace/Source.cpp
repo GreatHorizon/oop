@@ -82,34 +82,6 @@ bool CopyFileWithReplace(istream& inputFile, ostream& outputFile,
 	return true;
 }
 
-//void ShowError(Error error, optional<Args> args)
-//{
-//	if (error == TOO_FEW_ARGUMENTS)
-//	{
-//		cout << "Invalid argument count\n";
-//		cout << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>\n";
-//		return;
-//	}
-//
-//	if (error == INPUT_FILE_OPENING_ERROR)
-//	{
-//		cout << "Failed to open " << args->inputFileName << " for reading" << endl;
-//		return;
-//	}
-//
-//	if (error == OUTPUT_FILE_OPENING_ERROR)
-//	{
-//		cout << "Failed to open " << args->outputFileName << " for writing" << endl;
-//		return;
-//	}
-//
-//	if (error == SEARCH_STRING_IS_EMPRY)
-//	{
-//		cout << "<searchString> should not be empty" << endl;
-//		return;
-//	}
-//}
-
 bool checkFilesAndShowErrors(optional<Args> args, ifstream& inputFile, ofstream& outputFile)
 {
 	if (!args)
