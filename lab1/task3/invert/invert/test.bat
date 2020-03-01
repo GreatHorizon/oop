@@ -1,7 +1,6 @@
 @echo off
 SET MyProgram= "%~1"
 
-
 REM Запуск батника напрямую
 if %MyProgram%=="" (
 	echo Please specify path to program
@@ -45,7 +44,6 @@ echo test 7 passed successfuly
 %MyProgram% "test/matrix2_input.txt" > "%TEMP%\out.txt" || goto err
 fc test\matrix2_output.txt "%TEMP%\out.txt" && goto err2
 echo test 8 passed successfuly
-
 
 echo all tests have passed successfuly
 exit /B 0
