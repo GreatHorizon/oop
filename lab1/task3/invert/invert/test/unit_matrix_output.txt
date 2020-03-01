@@ -1,0 +1,1 @@
+Determinant is 0. Matrix is not invertible
