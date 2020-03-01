@@ -14,11 +14,6 @@ struct Args
 	string replaceString;
 };
 
-enum State {
-	CHECK_BEFORE_COPYING,
-	CHECK_AFTER_COPYING,
-};
-
 optional<Args> ParseArguments(int argc, char** argv)
 {
 	if (argc != 5)
@@ -62,15 +57,29 @@ string ReplaceString(const string& subject,
 	return result;
 }
 
-void CopyFileWithReplace(istream& input, ostream& output, 
+bool CopyFileWithReplace(istream& inputFile, ostream& outputFile, 
 	const string& searchString, const string& replacementString)
 {
 	string line;
 
-	while (getline(input, line))
+	while (getline(inputFile, line))
 	{
-		output << ReplaceString(line, searchString, replacementString) << endl;
+		outputFile << ReplaceString(line, searchString, replacementString) << endl;
 	}
+
+	if (inputFile.bad())
+	{
+		cout << "Failed to read data from input file" << endl;
+		return false;
+	}
+
+	if (!outputFile.flush())
+	{
+		cout << "Failed to write data in output file" << endl;
+		return false;
+	}
+
+	return true;
 }
 
 //void ShowError(Error error, optional<Args> args)
@@ -101,51 +110,34 @@ void CopyFileWithReplace(istream& input, ostream& output,
 //	}
 //}
 
-bool checkFilesAndShowErrors(optional<Args> args, ifstream& inputFile, ofstream& outputFile, State state)
+bool checkFilesAndShowErrors(optional<Args> args, ifstream& inputFile, ofstream& outputFile)
 {
-	if (state == CHECK_BEFORE_COPYING)
+	if (!args)
 	{
-		if (!args)
-		{
-			cout << "Invalid argument count"<< endl;
-			cout << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>" << endl;
-			return false;
-		}
-
-		if (args->searchString.empty())
-		{
-			cout << "<searchString> should not be empty" << endl;
-			return false;
-		}
-
-		inputFile.open(args->inputFileName);
-		outputFile.open(args->outputFileName);
-
-		if (!inputFile.is_open())
-		{
-			cout << "Failed to open " << args->inputFileName << " for reading" << endl;
-			return false;
-		}
-
-		if (!outputFile.is_open())
-		{
-			cout << "Failed to open " << args->outputFileName << " for writing" << endl;
-			return false;
-		}
+		cout << "Invalid argument count"<< endl;
+		cout << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>" << endl;
+		return false;
 	}
-	else
-	{
-		if (inputFile.bad())
-		{
-			cout << "Failed to read data from input file" << endl;
-			return false;
-		}
 
-		if (!outputFile.flush())
-		{
-			cout << "Failed to write data in output file" << endl;
-			return false;
-		}
+	if (args->searchString.empty())
+	{
+		cout << "<searchString> should not be empty" << endl;
+		return false;
+	}
+
+	inputFile.open(args->inputFileName);
+	outputFile.open(args->outputFileName);
+
+	if (!inputFile.is_open())
+	{
+		cout << "Failed to open " << args->inputFileName << " for reading" << endl;
+		return false;
+	}
+
+	if (!outputFile.is_open())
+	{
+		cout << "Failed to open " << args->outputFileName << " for writing" << endl;
+		return false;
 	}
 
 	return true;
@@ -157,14 +149,12 @@ int main(int argc, char** argv)
 	ifstream inputFile;
 	ofstream outputFile;
 
-	if (!checkFilesAndShowErrors(args, inputFile, outputFile, CHECK_BEFORE_COPYING))
+	if (!checkFilesAndShowErrors(args, inputFile, outputFile))
 	{
 		return 1;
 	}
 
-	CopyFileWithReplace(inputFile, outputFile, args->searchString, args->replaceString);
-
-	if (!checkFilesAndShowErrors(args, inputFile, outputFile, CHECK_AFTER_COPYING))
+	if (!CopyFileWithReplace(inputFile, outputFile, args->searchString, args->replaceString))
 	{
 		return 1;
 	}
