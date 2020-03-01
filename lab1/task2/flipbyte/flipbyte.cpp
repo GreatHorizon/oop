@@ -97,7 +97,8 @@ int main(int argc, char** argv)
         number = ReverseByte(number);
         cout << number << endl;
     }
-    else {
+    else 
+    {
         ShowError(errorParsedArguments);
         return 1;
     }
