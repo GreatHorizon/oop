@@ -13,7 +13,7 @@ enum Errors
 {
     IS_NOT_A_NUMBER,
     IS_NOT_IN_INTERVAL,
-    THERE_ARE_NOT_ERRORS,
+    THERE_ARE_NO_ERRORS,
     TOO_FEW_ARGUMENTS
 };
 
@@ -61,7 +61,7 @@ Errors ParseArguments(int argc, char** arguments, int &number)
     }
     else 
     {
-        return THERE_ARE_NOT_ERRORS;
+        return THERE_ARE_NO_ERRORS;
     }
 }
 
@@ -91,7 +91,7 @@ int main(int argc, char** argv)
     Errors errorParsedArguments;
     errorParsedArguments = ParseArguments(argc, argv, number);
 
-    if (errorParsedArguments == THERE_ARE_NOT_ERRORS)
+    if (errorParsedArguments == THERE_ARE_NO_ERRORS)
     { 
         //Получаем число путем изменения порядка битов на обратный
         number = ReverseByte(number);
@@ -102,7 +102,7 @@ int main(int argc, char** argv)
         ShowError(errorParsedArguments);
         return 1;
     }
- 
+
     return 0;
 }
 
