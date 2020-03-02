@@ -81,7 +81,7 @@ bool CopyFileWithReplace(istream& inputFile, ostream& outputFile,
 	return true;
 }
 
-bool checkFilesAndShowErrors(optional<Args> args, ifstream& inputFile, ofstream& outputFile)
+bool OpenFilesAndCheckErrors(optional<Args> args, ifstream& inputFile, ofstream& outputFile)
 {
 	if (!args)
 	{
@@ -120,7 +120,7 @@ int main(int argc, char** argv)
 	ifstream inputFile;
 	ofstream outputFile;
 
-	if (!checkFilesAndShowErrors(args, inputFile, outputFile))
+	if (!OpenFilesAndCheckErrors(args, inputFile, outputFile))
 	{
 		return 1;
 	}
