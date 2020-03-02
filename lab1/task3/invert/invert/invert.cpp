@@ -106,7 +106,7 @@ float GetDeterminant(const Matrix matrix) {
 }
 
 
-void GetIntermediaryMatrix(Matrix& intermediaryMatrix, Matrix originalMatrix)
+void GetAdjugateMatrix(Matrix& intermediaryMatrix, Matrix originalMatrix)
 {
 	int index = 1;
 
@@ -121,7 +121,7 @@ void GetIntermediaryMatrix(Matrix& intermediaryMatrix, Matrix originalMatrix)
 }
 
 
-void getInversedMatrix(const Matrix intermediaryMatrix, Matrix& resultMatrix, float determinant)
+void GetInversedMatrix(const Matrix intermediaryMatrix, Matrix& resultMatrix, float determinant)
 {
 	for (int i = 0; i < MATRIX_SIZE; i++)
 	{
@@ -143,9 +143,9 @@ bool InverseMatrix(Matrix& matrix)
 		return false;
 	}
 
-	Matrix intermediaryMatrix;
-	GetIntermediaryMatrix(intermediaryMatrix, matrix);
-	getInversedMatrix(intermediaryMatrix, matrix, determinant);
+	Matrix AdjugateMatrix;
+	GetAdjugateMatrix(AdjugateMatrix, matrix);
+	GetInversedMatrix(AdjugateMatrix, matrix, determinant);
 	return true;
 }
 

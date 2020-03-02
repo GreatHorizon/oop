@@ -81,21 +81,8 @@ bool CopyFileWithReplace(istream& inputFile, ostream& outputFile,
 	return true;
 }
 
-bool OpenFilesAndCheckErrors(optional<Args> args, ifstream& inputFile, ofstream& outputFile)
+bool OpenFiles(optional<Args> args, ifstream& inputFile, ofstream& outputFile)
 {
-	if (!args)
-	{
-		cout << "Invalid argument count"<< endl;
-		cout << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>" << endl;
-		return false;
-	}
-
-	if (args->searchString.empty())
-	{
-		cout << "<searchString> should not be empty" << endl;
-		return false;
-	}
-
 	inputFile.open(args->inputFileName);
 	outputFile.open(args->outputFileName);
 
@@ -120,7 +107,20 @@ int main(int argc, char** argv)
 	ifstream inputFile;
 	ofstream outputFile;
 
-	if (!OpenFilesAndCheckErrors(args, inputFile, outputFile))
+	if (!args)
+	{
+		cout << "Invalid argument count" << endl;
+		cout << "Usage: replace.exe <inputFile> <outputFile> <searchString> <replacementString>" << endl;
+		return false;
+	}
+
+	if (args->searchString.empty())
+	{
+		cout << "<searchString> should not be empty" << endl;
+		return false;
+	}
+
+	if (!OpenFiles(args, inputFile, outputFile))
 	{
 		return 1;
 	}
