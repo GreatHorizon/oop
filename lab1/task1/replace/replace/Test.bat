@@ -33,17 +33,17 @@ REM Обработка возврата при неудачном поиске
 fc test\output5.txt "%TEMP%\output.txt" || goto err2
 echo test 5 passed successfuly
 
-%MyProgram% "test/input6.txt" "%TEMP%\output.txt" " " * || goto err1
-fc test\output6.txt "%TEMP%\output.txt" || goto err2
-echo test 6 passed successfuly
-
-%MyProgram% "test/input7.txt" "%TEMP%\output.txt" "dog dog" "turtle" || goto err1
-fc test\output7.txt "%TEMP%\output.txt" || goto err2
-echo test 7 passed successfuly
-
 REM Проверка на зацикливание
 %MyProgram% "test/input8.txt" "%TEMP%\output.txt" ma mama || goto err1
 fc test\output8.txt "%TEMP%\output.txt" || goto err2
+echo test 6 passed successfuly
+
+%MyProgram% "test/input6.txt" "%TEMP%\output.txt" " " * || goto err1
+fc test\output6.txt "%TEMP%\output.txt" || goto err2
+echo test 7 passed successfuly
+
+%MyProgram% "test/input7.txt" "%TEMP%\output.txt" "dog dog" "turtle" || goto err1
+fc test\output7.txt "%TEMP%\output.txt" || goto err2
 echo test 8 passed successfuly
 
 
