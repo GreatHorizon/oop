@@ -95,11 +95,9 @@ float GetMinor(const Matrix matrix, int row, int column)
 float GetDeterminant(const Matrix matrix) {
 
 	float determinant = 0; 
-	int index = 1;
 	for (int j = 0; j < MATRIX_SIZE; j++)
 	{
-		determinant += matrix[0][j] * index * GetMinor(matrix, 0, j);
-		index *= -1;
+		determinant += matrix[0][j] * pow(-1, j) * GetMinor(matrix, 0, j); 
 	}
 
 	return determinant;
@@ -107,14 +105,11 @@ float GetDeterminant(const Matrix matrix) {
 
 void GetAdjugateMatrix(Matrix& intermediaryMatrix, Matrix originalMatrix)
 {
-	int index = 1;
-
 	for (int i = 0; i < MATRIX_SIZE; i++)
 	{
 		for (int j = 0; j < MATRIX_SIZE; j++)
 		{
-			intermediaryMatrix[j][i] = index * GetMinor(originalMatrix, i, j);
-			index *= -1;
+			intermediaryMatrix[j][i] = GetMinor(originalMatrix, i, j) * pow(-1, i);
 		}
 	}
 }
@@ -126,6 +121,7 @@ void GetInversedMatrix(const Matrix intermediaryMatrix, Matrix& resultMatrix, fl
 		for (int j = 0; j < MATRIX_SIZE; j++)
 		{
 			resultMatrix[i][j] = intermediaryMatrix[i][j] / determinant;
+
 			if (resultMatrix[i][j] == -0)
 			{
 				resultMatrix[i][j] = 0;
