@@ -63,7 +63,6 @@ bool OpenFileAndFillMatrix(std::optional<Arguments>& arg, Matrix& originalMatrix
 	return true;
 }
 
-
 float GetMinor(const Matrix matrix, int row, int column)
 {
 	float minor;
@@ -92,6 +91,7 @@ float GetMinor(const Matrix matrix, int row, int column)
 	minor = minorMatrix[0][0] * minorMatrix[1][1] - minorMatrix[0][1] * minorMatrix[1][0];
 	return minor;
 }
+
 float GetDeterminant(const Matrix matrix) {
 
 	float determinant = 0; 
@@ -104,7 +104,6 @@ float GetDeterminant(const Matrix matrix) {
 
 	return determinant;
 }
-
 
 void GetAdjugateMatrix(Matrix& intermediaryMatrix, Matrix originalMatrix)
 {
@@ -119,7 +118,6 @@ void GetAdjugateMatrix(Matrix& intermediaryMatrix, Matrix originalMatrix)
 		}
 	}
 }
-
 
 void GetInversedMatrix(const Matrix intermediaryMatrix, Matrix& resultMatrix, float determinant)
 {
@@ -148,7 +146,6 @@ bool InverseMatrix(Matrix& matrix)
 	GetInversedMatrix(AdjugateMatrix, matrix, determinant);
 	return true;
 }
-
 
 void ShowInvertedMatrix(Matrix& matrix)
 {
