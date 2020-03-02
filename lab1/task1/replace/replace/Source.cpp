@@ -40,16 +40,15 @@ string ReplaceString(const string& subject,
 	while (pos < subject.length())
 	{
 		foundPos = subject.find(searchString, pos);
-		
+		result.append(subject, pos, foundPos - pos);
+
 		if (foundPos != string::npos)
 		{	
-			result.append(subject, pos, foundPos - pos);
 			result.append(replacementString);
 			pos = foundPos + searchString.length();
 		}
 		else
 		{
-			result.append(subject, pos, subject.length() - pos);
 			break;
 		}
 	}
