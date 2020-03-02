@@ -126,6 +126,10 @@ void GetInversedMatrix(const Matrix intermediaryMatrix, Matrix& resultMatrix, fl
 		for (int j = 0; j < MATRIX_SIZE; j++)
 		{
 			resultMatrix[i][j] = intermediaryMatrix[i][j] / determinant;
+			if (resultMatrix[i][j] == -0)
+			{
+				resultMatrix[i][j] = 0;
+			}
 		}
 	}
 }
@@ -153,11 +157,6 @@ void ShowInvertedMatrix(Matrix& matrix)
 	{
 		for (int j = 0; j < MATRIX_SIZE; j++)
 		{
-			if (matrix[i][j] == -0)
-			{
-				matrix[i][j] = 0;
-			}
-
 			cout << setprecision(3) << matrix[i][j] << " ";
 		}
 		cout << endl;
