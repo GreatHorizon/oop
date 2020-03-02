@@ -17,13 +17,14 @@ enum Errors {
 
 const int MATRIX_SIZE = 3;
 const int MINOR_SIZE = 2;
+const int ARGUMENTS_COUNT = 2;
 
 typedef float Matrix[MATRIX_SIZE][MATRIX_SIZE];
 typedef float MinorMatrix[MINOR_SIZE][MINOR_SIZE];
 
 optional <Arguments> GetArguments(int argc, char** argv)
 {
-	if (argc != 2)
+	if (argc != ARGUMENTS_COUNT)
 	{
 		cout << "Invalid input" << endl;
 		cout << "Usage: <inputFileName>" << endl;
