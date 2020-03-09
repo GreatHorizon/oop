@@ -173,14 +173,13 @@ bool UnpackFile(const string& inputFileName, const string& outputFileName)
 	ifstream inputFile;
 
 	inputFile.open(inputFileName, ios::binary | ios::ate);
-	outputFile.open(outputFileName, ios::binary);
-
 	if (!inputFile.is_open())
 	{
 		cout << "Failed to open " << inputFileName << " for reading"<< endl;
 		return false;
 	}
 
+	outputFile.open(outputFileName, ios::binary);
 	if (!outputFile.is_open())
 	{
 		cout << "Failed to open " << outputFileName << " for writing" << endl;
