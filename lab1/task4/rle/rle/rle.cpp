@@ -59,7 +59,7 @@ optional <Arguments> ParseArguments(const int argc, char** argv)
 	return args;
 }
 
-bool checkFileSize(ifstream& inputFile)
+bool CheckFileSize(ifstream& inputFile)
 {
 	streampos inputFileSize = inputFile.tellg();
 
@@ -149,7 +149,7 @@ bool PackFile(const string& inputFileName, const string& outputFileName)
 	return true;
 }
 
-void unpackData(ifstream& inputFile, ofstream& outputFile)
+void UnpackData(ifstream& inputFile, ofstream& outputFile)
 {
 	char byteCount = 0;
 	char currentByte = 0;
@@ -186,12 +186,12 @@ bool UnpackFile(const string& inputFileName, const string& outputFileName)
 		return false;
 	}
 
-	if (!checkFileSize(inputFile))
+	if (!CheckFileSize(inputFile))
 	{
 		return false;
 	}
 
-	unpackData(inputFile, outputFile);
+	UnpackData(inputFile, outputFile);
 
 	if (inputFile.bad())
 	{
