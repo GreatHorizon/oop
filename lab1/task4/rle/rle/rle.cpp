@@ -1,5 +1,4 @@
-﻿
-#include <iostream>
+﻿#include <iostream>
 #include <fstream>
 #include <optional>
 
@@ -24,7 +23,6 @@ struct Arguments
 	Mode mode;
 };
 
-
 Mode GetMode(string mode)
 {
 	if (mode == PACK_MODE)
@@ -36,7 +34,6 @@ Mode GetMode(string mode)
 	{
 		return Mode::UNPACK_MODE;
 	}
-
 	else
 	{
 		cout << "Incorrect pack mode" << endl;
@@ -55,7 +52,6 @@ optional <Arguments> ParseArguments(const int argc, char** argv)
 	}
 
 	Arguments args;
-
 	args.mode = GetMode(argv[1]);
 	args.inputFileName = argv[2];
 	args.outputFileName = argv[3];
