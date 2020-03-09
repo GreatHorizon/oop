@@ -14,11 +14,13 @@ REM Некорректный режим
 echo test 2 passed successfuly 
 
 REM Пустой входной файл при упаковке
-%MyProgram% "pack" "test/empty_input.txt" "%TEMP%\output.txt" && goto err1
+%MyProgram% "pack" "test/empty.txt" "%TEMP%\output.txt" || goto err1
+fc "test\empty.txt" %TEMP%\output.txt || goto err2
 echo test 3 passed successfuly
 
 REM Пустой входной файл при распаковке
-%MyProgram% "unpack" "test/empty_input.txt" "%TEMP%\output.txt" && goto err1
+%MyProgram% "unpack" "test/empty.txt" "%TEMP%\output.txt" || goto err1
+fc "test\empty.txt" %TEMP%\output.txt || goto err2
 echo test 4 passed successfuly
 
 REM Файл с нечетным количеством байт при распаковке
@@ -54,15 +56,31 @@ REM Запаковка последовательностей из одного байта
 fc "test\pack_single_symbols_output.txt" %TEMP%\output.txt || goto err2
 echo test 11 passed successfuly
 
-REM Запаковка символа с кодом 255
-%MyProgram% "pack" "test/pack_single_symbols_input.txt" %TEMP%\output.txt || goto err1
-fc "test\pack_single_symbols_output.txt" %TEMP%\output.txt || goto err2
+REM Распаковка последовательностей из одного байта
+%MyProgram% "unpack" "test/pack_single_symbols_output.txt" %TEMP%\output.txt || goto err1
+fc "test\pack_single_symbols_input.txt" %TEMP%\output.txt || goto err2
 echo test 12 passed successfuly
 
+REM Запаковка 1 байта
+%MyProgram% "pack" "test/pack_input_3.txt" %TEMP%\output.txt || goto err1
+fc "test\pack_output_3.txt" %TEMP%\output.txt || goto err2
+echo test 13 passed successfuly
+
+REM Распаковка 1 байта
+%MyProgram% "unpack" "test/pack_output_3.txt" %TEMP%\output.txt || goto err1
+fc "test\pack_input_3.txt" %TEMP%\output.txt || goto err2
+echo test 14 passed successfuly
+
+%MyProgram% "pack" "test/pack_input_4.txt" %TEMP%\output.txt || goto err1
+fc "test\pack_output_4.txt" %TEMP%\output.txt || goto err2
+echo test 15 passed successfuly
+
+%MyProgram% "unpack" "test/pack_output_4.txt" %TEMP%\output.txt || goto err1
+fc "test\pack_input_4.txt" %TEMP%\output.txt || goto err2
+echo test 16 passed successfuly
 
 echo All tests passed successuly
 exit /B 0
-
 
 :err1
 echo fail with input

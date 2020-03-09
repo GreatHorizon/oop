@@ -7,8 +7,8 @@ using namespace std;
 
 const int ARGUMENTS_COUNT = 4;
 const int MAX_BYTE_AMOUNT = 255;
-const string PACK_MODE_ARGUMENT = "pack";
-const string UNPACK_MODE_ARGUMENT = "unpack";
+const string PACK_MODE = "pack";
+const string UNPACK_MODE = "unpack";
 
 enum class Mode
 {
@@ -27,12 +27,12 @@ struct Arguments
 
 Mode GetMode(string mode)
 {
-	if (mode == PACK_MODE_ARGUMENT)
+	if (mode == PACK_MODE)
 	{
 		return Mode::PACK_MODE;
 	}
 
-	if (mode == UNPACK_MODE_ARGUMENT)
+	if (mode == UNPACK_MODE)
 	{
 		return Mode::UNPACK_MODE;
 	}
@@ -63,24 +63,38 @@ optional <Arguments> ParseArguments(const int argc, char** argv)
 	return args;
 }
 
-void PutPairOfBytes(ostream& outputFile, char currentByte, unsigned char byteAmount)
+bool checkFileSize(ifstream& inputFile)
+{
+	streampos inputFileSize = inputFile.tellg();
+
+	if (inputFileSize % 2 != 0)
+	{
+		cout << "Input file should have even byte amount" << endl;
+		return false;
+	}
+
+	inputFile.seekg(0);
+	return true;
+}
+
+void PutPairOfBytes(ostream& outputFile, const char& currentByte, const unsigned char& byteAmount)
 {
 	outputFile.put(byteAmount);
 	outputFile.put(currentByte);
+	cout << byteAmount;
 }
 
 void PackData(ifstream& inputFile, ofstream& outputFile)
 {
 	char currentByte = 0;
 	char nextByte = 0;
-	unsigned char byteCounter = 1;
+	unsigned char byteCounter = 0;
 
 	while (inputFile.read(&nextByte, sizeof(nextByte)))
 	{
 		if (currentByte == 0)
 		{
 			currentByte = nextByte;
-			continue;
 		}
 
 		if (nextByte == currentByte && byteCounter < MAX_BYTE_AMOUNT)
@@ -102,44 +116,47 @@ void PackData(ifstream& inputFile, ofstream& outputFile)
 	}
 }
 
-bool PackFile(string inputFileName, string outputFileName)
+bool PackFile(const string& inputFileName, const string& outputFileName)
 {
 	ofstream outputFile;
 	ifstream inputFile;
 
 	inputFile.open(inputFileName, ios::binary | ios::ate);
-	outputFile.open(outputFileName, ios::binary);
-
 	if (!inputFile.is_open())
 	{
-		cout << "Failed to open" << inputFileName << "for reading";
+		cout << "Failed to open " << inputFileName << "for reading";
 		return false;
 	}
 
+	outputFile.open(outputFileName, ios::binary);
 	if (!outputFile.is_open())
 	{
-		cout << "Failed to open" <<	outputFileName << "for writing";
+		cout << "Failed to open " <<	outputFileName << "for writing";
 		return false;
 	}
 
-	if (!inputFile.tellg())
-	{
-		cout << "Input file should not be empty" << endl;
-		return false;
-	}
-
-	inputFile.seekg(0, ios::beg);
-
+	inputFile.seekg(0);
 	PackData(inputFile, outputFile);
+
+	if (inputFile.bad())
+	{
+		cout << "Failed to read data from " << inputFileName << endl;
+		return false;
+	}
+
+	if (!outputFile.flush())
+	{
+		cout << "Failed to write data to " << outputFileName << endl;
+		return false;
+	}
+
 	return true;
 }
-
-
 
 void unpackData(ifstream& inputFile, ofstream& outputFile)
 {
 	char byteCount = 0;
-	char currentByte;
+	char currentByte = 0;
 	int byteAmount = 0;
 
 	while (inputFile.read(&byteCount, sizeof(byteCount)))
@@ -148,13 +165,13 @@ void unpackData(ifstream& inputFile, ofstream& outputFile)
 		inputFile.read(&currentByte, sizeof(currentByte));
 		for (int i= 0;  i < byteAmount; ++i)
 		{
-			outputFile << currentByte;
+			outputFile.put(currentByte);
 		}
 
 	}
 }
 
-bool UnpackFile(string inputFileName, string outputFileName)
+bool UnpackFile(const string& inputFileName, const string& outputFileName)
 {
 	ofstream outputFile;
 	ifstream inputFile;
@@ -174,21 +191,11 @@ bool UnpackFile(string inputFileName, string outputFileName)
 		return false;
 	}
 
-	streampos inputFileSize = inputFile.tellg();
-
-	if (!inputFileSize)
+	if (!checkFileSize(inputFile))
 	{
-		cout << "Input file should not be empty" << endl;
 		return false;
 	}
 
-	if (inputFileSize % 2 != 0)
-	{
-		cout << "Input file should have even byte amount" << endl;
-		return false;
-	}
-
-	inputFile.seekg(0);
 	unpackData(inputFile, outputFile);
 
 	if (inputFile.bad())
@@ -234,7 +241,6 @@ int main(int argc, char** argv)
 			return 1;
 		}
 	}
-	
 
 	return 0;
 }
