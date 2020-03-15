@@ -4,7 +4,6 @@ int main()
 {
 	vector<double> numbers = GetVector();
 	
-
 	if (!ProcessVector(numbers))
 	{
 		return 1;
