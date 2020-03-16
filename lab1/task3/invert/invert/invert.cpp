@@ -19,8 +19,8 @@ const int MATRIX_SIZE = 3;
 const int MINOR_SIZE = 2;
 const int ARGUMENTS_COUNT = 2;
 
-typedef float Matrix[MATRIX_SIZE][MATRIX_SIZE];
-typedef float MinorMatrix[MINOR_SIZE][MINOR_SIZE];
+typedef double Matrix[MATRIX_SIZE][MATRIX_SIZE];
+typedef double MinorMatrix[MINOR_SIZE][MINOR_SIZE];
 
 optional <Arguments> GetArguments(int argc, char** argv)
 {
@@ -36,7 +36,7 @@ optional <Arguments> GetArguments(int argc, char** argv)
 	return arg;
 }
 
-bool OpenFileAndFillMatrix(std::optional<Arguments>& arg, Matrix& originalMatrix)
+bool OpenFileAndFillMatrix(optional<Arguments>& arg, Matrix& originalMatrix)
 {
 	ifstream inputFile;
 	inputFile.open(arg->inputFileName);
@@ -64,9 +64,9 @@ bool OpenFileAndFillMatrix(std::optional<Arguments>& arg, Matrix& originalMatrix
 	return true;
 }
 
-float GetMinor(const Matrix matrix, int row, int column)
+double GetMinor(const Matrix matrix, int row, int column)
 {
-	float minor;
+	double minor;
 	MinorMatrix minorMatrix;
 
 	for (int i = 0, minorMatrixRow = 0; i < MATRIX_SIZE; i++)
@@ -93,9 +93,9 @@ float GetMinor(const Matrix matrix, int row, int column)
 	return minor;
 }
 
-float GetDeterminant(const Matrix matrix) {
+double GetDeterminant(const Matrix matrix) {
 
-	float determinant = 0; 
+	double determinant = 0; 
 	for (int j = 0; j < MATRIX_SIZE; j++)
 	{
 		determinant += matrix[0][j] * pow(-1, j) * GetMinor(matrix, 0, j); 
@@ -110,12 +110,12 @@ void GetAdjugateMatrix(Matrix& intermediaryMatrix, Matrix originalMatrix)
 	{
 		for (int j = 0; j < MATRIX_SIZE; j++)
 		{
-			intermediaryMatrix[j][i] = GetMinor(originalMatrix, i, j) * pow(-1, i);
+			intermediaryMatrix[j][i] = GetMinor(originalMatrix, i, j) * pow(-1, i+j);
 		}
 	}
 }
 
-void GetInversedMatrix(const Matrix intermediaryMatrix, Matrix& resultMatrix, float determinant)
+void GetInversedMatrix(const Matrix intermediaryMatrix, Matrix& resultMatrix, double determinant)
 {
 	for (int i = 0; i < MATRIX_SIZE; i++)
 	{
@@ -133,7 +133,7 @@ void GetInversedMatrix(const Matrix intermediaryMatrix, Matrix& resultMatrix, fl
 
 bool InverseMatrix(Matrix& matrix)
 {
-	float determinant; 
+	double determinant; 
 
 	determinant = GetDeterminant(matrix);
 	if (determinant == 0)

@@ -1,5 +1,4 @@
 #include "stdafx.h"
-
 vector<double> GetVector()
 {
 	return vector<double>(istream_iterator<double>(cin), (istream_iterator<double>()));

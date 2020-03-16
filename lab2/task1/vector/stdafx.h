@@ -5,5 +5,4 @@
 #include <algorithm>
 #include <iterator>
 #include <iomanip>
-
 using namespace std;

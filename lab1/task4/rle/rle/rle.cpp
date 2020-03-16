@@ -77,7 +77,6 @@ void PutPairOfBytes(ostream& outputFile, const char& currentByte, const unsigned
 {
 	outputFile.put(byteAmount);
 	outputFile.put(currentByte);
-	cout << byteAmount;
 }
 
 void PackData(ifstream& inputFile, ofstream& outputFile)
