@@ -6,4 +6,3 @@
 #include <map>
 #include <optional>
 #include <windows.h>
-

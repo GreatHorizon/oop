@@ -1,4 +1,3 @@
-#include "stdafx.h"
 #include "dictionary.h"
 
 int main(int argc, char** argv)
@@ -8,23 +7,23 @@ int main(int argc, char** argv)
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 
-	auto dictionaryFileName = parseArguments(argc, argv);
+	auto dictionaryArg = parseArguments(argc, argv);
 
-	if (!dictionaryFileName)
+	if (!dictionaryArg)
 	{
 		return 1;
 	}
 
 	WordsContainer dictionary;
 	WordsContainer newWords;
-	GetDictionaryFromFile(dictionaryFileName, dictionary);
+	GetDictionaryFromFile(dictionaryArg, dictionary);
 
 	if (!ProcessUsersRequests(dictionary, newWords))
 	{
 		return 1;
 	}
 
-	if (SaveChangesToDictionary(dictionaryFileName, newWords))
+	if (SaveChangesToDictionary(dictionaryArg, newWords))
 	{
 		return 0;
 	}

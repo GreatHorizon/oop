@@ -3,11 +3,6 @@
 
 using namespace std;
 
-struct DictionaryInfo
-{
-	string dictionaryFileName;
-};
-
 optional <DictionaryInfo> parseArguments(int argc, char** argv)
 {
 	if (argc != 2)
@@ -27,9 +22,13 @@ void getTranslation(const string& word, string& translation, WordsContainer cont
 	auto positions = container.equal_range(word);
 	for (auto it = positions.first ; it != positions.second; it++)
 	{
+		if (it != positions.first)
+		{
+			translation += ", ";
+		}
 		if (it->first == word)
 		{
-			translation += it->second + " ";
+			translation += it->second;
 		}
 		else
 		{
@@ -118,14 +117,14 @@ bool PushNewWordsToFile(const string& dictionaryFileName, WordsContainer& newWor
 	return true;
 }
 
-bool SaveChangesToDictionary(const string& dictionaryFileName, WordsContainer& newWords)
+bool SaveChangesToDictionary(optional<DictionaryInfo>& dictionaryArg, WordsContainer& newWords)
 {
 	string word;
 	cout << "В словарь были внесены изменения. Введите Y или y для сохранения перед выходом." << endl;
 	getline(cin, word);
 	if (word == "Y" || word == "y")
 	{	
-		if (PushNewWordsToFile(dictionaryFileName, newWords))
+		if (PushNewWordsToFile(dictionaryArg->dictionaryFileName, newWords))
 		{
 			cout << "Изменения сохранены. До свидания." << endl;
 			return true;
