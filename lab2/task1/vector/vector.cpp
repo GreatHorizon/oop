@@ -1,4 +1,6 @@
-﻿#include "VectorFunctions.h"
+﻿using namespace std;
+#include "VectorFunctions.h"
+
 
 int main()
 {

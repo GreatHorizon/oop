@@ -1,8 +1,9 @@
-﻿#define CATCH_CONFIG_MAIN
+﻿using namespace std;
+#define CATCH_CONFIG_MAIN
 #include "../vector/VectorFunctions.h"
 #include "../../../catch2/catch.hpp"
 
-TEST_CASE()
+TEST_CASE("Test ProcessVector()")
 {
 	double maxNumber = 0;
 
