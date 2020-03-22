@@ -1,24 +1,9 @@
 ﻿#include "stdafx.h"
 #include "dictionary.h"
+
 using namespace std;
 
-const std::string END_PROGRAMM_COMMAND = "...";
-
-optional <DictionaryPath> parseArguments(int argc, char** argv)
-{
-	DictionaryPath dictionaryArg;
-	if (argc != 2)
-	{
-		cout << "Invalid arguments count" << endl;
-		cout << "Usage: <dictionaryFileName>" << endl;
-		return nullopt;
-	}
-	else 
-	{
-		dictionaryArg.dictionaryFileName = argv[1];
-	}
-	return dictionaryArg;
-};
+const string END_PROGRAMM_COMMAND = "...";
 
 void GetTranslation(const string& word, string& translation, WordsContainer container)
 {

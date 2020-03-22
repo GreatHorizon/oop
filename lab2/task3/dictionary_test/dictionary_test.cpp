@@ -1,4 +1,5 @@
-﻿#define CATCH_CONFIG_MAIN
+﻿#include "../dictionary/stdafx.h"
+#define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
 #include "../dictionary/dictionary.h"
 using namespace std;

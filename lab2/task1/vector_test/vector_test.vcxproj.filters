@@ -26,8 +26,5 @@
     <ClInclude Include="..\..\..\catch2\catch.hpp">
       <Filter>Файлы заголовков</Filter>
     </ClInclude>
-    <ClInclude Include="..\vector\VectorFunctions.h">
-      <Filter>Файлы заголовков</Filter>
-    </ClInclude>
   </ItemGroup>
 </Project>

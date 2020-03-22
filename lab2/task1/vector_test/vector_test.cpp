@@ -1,13 +1,13 @@
-﻿using namespace std;
-#define CATCH_CONFIG_MAIN
-#include "../vector/VectorFunctions.h"
+﻿#define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
+#include "../vector/VectorFunctions.h"
+using namespace std;
 
 TEST_CASE("Test ProcessVector()")
 {
 	double maxNumber = 0;
 
-	//Обработка пустого вектора
+	//Обработка пустого вектораw
 	vector<double> numbers;
 	vector<double> required;
 	ProcessVector(numbers);

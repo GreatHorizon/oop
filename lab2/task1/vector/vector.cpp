@@ -1,5 +1,6 @@
-﻿using namespace std;
+﻿#include "stdafx.h"
 #include "VectorFunctions.h"
+using namespace std;
 
 int main()
 {
