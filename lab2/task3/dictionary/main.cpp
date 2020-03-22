@@ -2,22 +2,24 @@
 
 int main(int argc, char** argv)
 {
-
-	setlocale(LC_ALL, "Russian");
+	/*setlocale(LC_ALL, "Russian");*/
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
 
 	auto dictionaryArg = parseArguments(argc, argv);
+	WordsContainer dictionary;
 
 	if (!dictionaryArg)
 	{
 		return 1;
 	}
 
-	WordsContainer dictionary;
-	WordsContainer newWords;
-	GetDictionaryFromFile(dictionaryArg, dictionary);
+	if (!GetDictionaryFromFile(dictionaryArg, dictionary))
+	{
+		return 1;
+	}
 
+	WordsContainer newWords;
 	if (!ProcessUsersRequests(dictionary, newWords))
 	{
 		return 1;
@@ -27,7 +29,6 @@ int main(int argc, char** argv)
 	{
 		return 0;
 	}
-
 	else
 	{
 		return 1;

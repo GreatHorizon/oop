@@ -5,15 +5,18 @@ using namespace std;
 
 optional <DictionaryInfo> parseArguments(int argc, char** argv)
 {
+	DictionaryInfo dictionaryArg;
 	if (argc != 2)
 	{
-		cout << "Invalid argument count" << endl;
+		cout << "Invalid arguments count" << endl;
 		cout << "Usage: <dictionaryFileName>" << endl;
 		return nullopt;
 	}
-
-	DictionaryInfo dictionaryArg;
-	dictionaryArg.dictionaryFileName = argv[1];
+	else 
+	{
+		dictionaryArg.dictionaryFileName = argv[1];
+		dictionaryArg.isDictionary = true;
+	}
 	return dictionaryArg;
 };
 
@@ -37,7 +40,7 @@ void getTranslation(const string& word, string& translation, WordsContainer cont
 	}
 }
 
-bool GetTranstationFromDictionary(const string& word, string& translation,
+bool SearchTranslation(const string& word, string& translation,
   WordsContainer dictionary, WordsContainer newWords)
 {
 	translation = "";
@@ -63,14 +66,14 @@ bool GetTranstationFromDictionary(const string& word, string& translation,
 	return true;
 }
 
-void GetDictionaryFromFile(optional<DictionaryInfo>& dictionaryArgs, WordsContainer& dictionary)
+bool GetDictionaryFromFile(optional <DictionaryInfo>& dictionaryArgs, WordsContainer& dictionary)
 {
 	ifstream dictionaryFile;
 	dictionaryFile.open(dictionaryArgs->dictionaryFileName);
 
 	if (!dictionaryFile.is_open())
 	{
-		dictionaryArgs->dictionaryFileName = DEFAULT_FILE_NAME;
+		return true;
 	}
 	else
 	{
@@ -85,6 +88,27 @@ void GetDictionaryFromFile(optional<DictionaryInfo>& dictionaryArgs, WordsContai
 			}	
 		}
 	}
+
+	if (dictionaryFile.bad())
+	{
+		return false;
+		cout << "There was an error while reading file" << endl;
+	}
+
+	return true;
+}
+
+void RemoveDuplicate(pair<WordsContainer::iterator, WordsContainer::iterator>& positions, 
+	WordsContainer::iterator& it, WordsContainer& newWords)
+{
+	for (auto iterator = positions.first; iterator != positions.second; iterator++)
+	{
+		if (iterator->second == it->first)
+		{
+			newWords.erase(iterator);
+			break;
+		}
+	}
 }
 
 bool PushNewWordsToFile(const string& dictionaryFileName, WordsContainer& newWords)
@@ -94,7 +118,7 @@ bool PushNewWordsToFile(const string& dictionaryFileName, WordsContainer& newWor
 
 	if (!dictionaryFile.is_open())
 	{
-		cout << "Failed to write data to " << dictionaryFileName << endl;
+		cout << "Failed to open " << dictionaryFileName <<" for writing data." <<endl;
 		return false;
 	}
 
@@ -104,26 +128,36 @@ bool PushNewWordsToFile(const string& dictionaryFileName, WordsContainer& newWor
 		dictionaryFile << it->second << endl;
 		
 		auto positions = newWords.equal_range(it->second);
-
-		for (auto iterator = positions.first; iterator != positions.second; iterator++)
-		{
-			if (iterator->second == it->first)
-			{
-				newWords.erase(iterator);
-				break;
-			}
-		}
+		RemoveDuplicate(positions, it, newWords);
 	}
+
+	if (!dictionaryFile.flush())
+	{
+		cout << "Failed to write data to " << dictionaryFileName << endl;
+		return false;
+	}
+
 	return true;
 }
 
-bool SaveChangesToDictionary(optional<DictionaryInfo>& dictionaryArg, WordsContainer& newWords)
+void GetNewFileName(optional <DictionaryInfo>& dictionaryArg)
+{
+	cout << "Введите имя нового файла для словаря" << endl;
+	cin >> dictionaryArg->dictionaryFileName;
+}
+
+bool SaveChangesToDictionary(optional <DictionaryInfo>& dictionaryArg, WordsContainer& newWords)
 {
 	string word;
 	cout << "В словарь были внесены изменения. Введите Y или y для сохранения перед выходом." << endl;
 	getline(cin, word);
 	if (word == "Y" || word == "y")
 	{	
+		if (!dictionaryArg->isDictionary)
+		{
+			GetNewFileName(dictionaryArg);
+		}
+
 		if (PushNewWordsToFile(dictionaryArg->dictionaryFileName, newWords))
 		{
 			cout << "Изменения сохранены. До свидания." << endl;
@@ -134,6 +168,7 @@ bool SaveChangesToDictionary(optional<DictionaryInfo>& dictionaryArg, WordsConta
 			return false;
 		}
 	}
+
 	else
 	{
 		cout << "Изменения не были сохранены. До свидания." << endl;
@@ -175,7 +210,7 @@ bool ProcessUsersRequests(WordsContainer& dictionary, WordsContainer& newWords)
 			continue;
 		}
 
-		if (GetTranstationFromDictionary(word, translation, dictionary, newWords))
+		if (SearchTranslation(word, translation, dictionary, newWords))
 		{
 			cout << translation << endl;
 		}
@@ -185,6 +220,7 @@ bool ProcessUsersRequests(WordsContainer& dictionary, WordsContainer& newWords)
 			result = true;
 		}	
 	}
+
 	return result;
 }
 

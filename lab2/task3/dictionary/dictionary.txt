@@ -6,3 +6,15 @@ cat
 кот
 cat
 котик
+apple
+green
+apple
+зеленый
+apple
+€блоко
+dog
+пес
+dog
+собака
+€блоко
+€ззду
