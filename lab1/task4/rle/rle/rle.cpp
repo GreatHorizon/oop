@@ -1,27 +1,11 @@
-﻿#include <iostream>
-#include <fstream>
-#include <optional>
-
+﻿#include "stdafx.h"
+#include "rle.h"
 using namespace std;
 
 const int ARGUMENTS_COUNT = 4;
 const int MAX_BYTE_AMOUNT = 255;
 const string PACK_MODE = "pack";
 const string UNPACK_MODE = "unpack";
-
-enum class Mode
-{
-	PACK_MODE,
-	UNPACK_MODE,
-	INCORRECT_MODE,
-};
-
-struct Arguments
-{
-	string inputFileName;
-	string outputFileName;
-	Mode mode;
-};
 
 Mode GetMode(string mode)
 {
@@ -59,13 +43,12 @@ optional <Arguments> ParseArguments(const int argc, char** argv)
 	return args;
 }
 
-bool CheckFileSize(ifstream& inputFile)
+bool CheckFileSize(istream& inputFile)
 {
 	streampos inputFileSize = inputFile.tellg();
 
 	if (inputFileSize % 2 != 0)
 	{
-		cout << "Input file should have even byte amount" << endl;
 		return false;
 	}
 
@@ -73,42 +56,48 @@ bool CheckFileSize(ifstream& inputFile)
 	return true;
 }
 
-void PutPairOfBytes(ostream& outputFile, const char& currentByte, const unsigned char& byteAmount)
+void PutPairOfBytes(ostream& outputFile, RLEPacket packet)
 {
-	outputFile.put(byteAmount);
-	outputFile.put(currentByte);
+	outputFile.put(packet.byteCounter);
+	outputFile.put(packet.currentByte);
 }
 
-void PackData(ifstream& inputFile, ofstream& outputFile)
+void PackCurrentByte(RLEPacket& packet, char byte, ostream& outputFile)
 {
-	char currentByte = 0;
-	char nextByte = 0;
-	unsigned char byteCounter = 0;
-
-	while (inputFile.read(&nextByte, sizeof(nextByte)))
+	uint8_t data = byte;
+	if (packet.currentByte == data && packet.byteCounter < MAX_BYTE_AMOUNT)
 	{
-		if (currentByte == 0)
-		{
-			currentByte = nextByte;
-		}
-
-		if (nextByte == currentByte && byteCounter < MAX_BYTE_AMOUNT)
-		{
-			byteCounter++;
-		}
-
-		else
-		{
-			PutPairOfBytes(outputFile, currentByte, byteCounter);
-			currentByte = nextByte;
-			byteCounter = 1;
-		}
-
-		if (inputFile.peek() == -1)
-		{
-			PutPairOfBytes(outputFile, currentByte, byteCounter);
-		}
+		packet.byteCounter++;
 	}
+	else
+	{
+		PutPairOfBytes(outputFile, packet);
+		packet.currentByte = data;
+		packet.byteCounter = 1;
+	}
+}
+
+
+void PackData(istream& inputFile, ostream& outputFile)
+{
+	RLEPacket packet;
+	char byte = 0;
+
+	inputFile.read(&byte, sizeof(byte));
+	if (inputFile.eof())
+	{
+		return;
+	}
+	packet.currentByte = byte;
+	packet.byteCounter = 1;
+
+	while (inputFile.read(&byte, sizeof(byte)))
+	{
+		PackCurrentByte(packet, byte, outputFile);
+	}
+
+	PutPairOfBytes(outputFile, packet);
+
 }
 
 bool PackFile(const string& inputFileName, const string& outputFileName)
@@ -148,7 +137,7 @@ bool PackFile(const string& inputFileName, const string& outputFileName)
 	return true;
 }
 
-void UnpackData(ifstream& inputFile, ofstream& outputFile)
+void UnpackData(istream& inputFile, ostream& outputFile)
 {
 	char byteCount = 0;
 	char currentByte = 0;
@@ -158,11 +147,10 @@ void UnpackData(ifstream& inputFile, ofstream& outputFile)
 	{
 		byteAmount = static_cast<int>(static_cast<unsigned char>(byteCount));
 		inputFile.read(&currentByte, sizeof(currentByte));
-		for (int i= 0;  i < byteAmount; ++i)
+		for (int i = 0; i < byteAmount; ++i)
 		{
 			outputFile.put(currentByte);
 		}
-
 	}
 }
 
@@ -187,6 +175,7 @@ bool UnpackFile(const string& inputFileName, const string& outputFileName)
 
 	if (!CheckFileSize(inputFile))
 	{
+		cout << "Input file should have even byte amount" << endl;
 		return false;
 	}
 
@@ -207,34 +196,3 @@ bool UnpackFile(const string& inputFileName, const string& outputFileName)
 	return true;
 }
 
-int main(int argc, char** argv)
-{
-	optional args = ParseArguments(argc, argv);
-
-	if (!args)
-	{
-		return 1;
-	}
-
-	if (args->mode == Mode::INCORRECT_MODE)
-	{
-		return 1;
-	}
-
-	if (args->mode == Mode::PACK_MODE)
-	{
-		if (!PackFile(args->inputFileName, args->outputFileName))
-		{
-			return 1;
-		}
-	}
-	else
-	{
-		if (!UnpackFile(args->inputFileName, args->outputFileName))
-		{
-			return 1;
-		}
-	}
-
-	return 0;
-}

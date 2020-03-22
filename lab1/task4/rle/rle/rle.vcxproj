@@ -167,10 +167,12 @@
     </PostBuildEvent>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="main.cpp" />
     <ClCompile Include="rle.cpp" />
   </ItemGroup>
   <ItemGroup>
     <ClInclude Include="rle.h" />
+    <ClInclude Include="stdafx.h" />
   </ItemGroup>
   <ItemGroup>
     <None Include="test.bat" />
