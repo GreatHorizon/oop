@@ -3,8 +3,6 @@
 #include "../dictionary/dictionary.h"
 using namespace std;
 
-
-
 TEST_CASE("Test SearchTranslation()")
 {
 	SetConsoleCP(1251);
@@ -55,7 +53,7 @@ TEST_CASE("Test AddNewWordToDictionary()")
 	SearchTranslation("grass", translation, dictionary);
 	REQUIRE(translation == "трава");
 
-	//Поиск "cat" перед обавлением слова кот с переводом cat
+	//Поиск "cat" перед обавлением слова "кот" с переводом "cat"
 	SearchTranslation("cat", translation, dictionary);
 	REQUIRE(translation == "кошка");
 

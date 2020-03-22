@@ -4,9 +4,9 @@ using namespace std;
 
 const std::string END_PROGRAMM_COMMAND = "...";
 
-optional <DictionaryInfo> parseArguments(int argc, char** argv)
+optional <DictionaryPath> parseArguments(int argc, char** argv)
 {
-	DictionaryInfo dictionaryArg;
+	DictionaryPath dictionaryArg;
 	if (argc != 2)
 	{
 		cout << "Invalid arguments count" << endl;
@@ -57,7 +57,7 @@ bool SearchTranslation(const string& word, string& translation, WordsContainer d
 	}
 }
 
-bool GetDictionaryFromFile(optional <DictionaryInfo>& dictionaryArgs, WordsContainer& dictionary)
+bool GetDictionaryFromFile(optional <DictionaryPath>& dictionaryArgs, WordsContainer& dictionary)
 {
 	ifstream dictionaryFile;
 	dictionaryFile.open(dictionaryArgs->dictionaryFileName);
@@ -131,7 +131,7 @@ bool PushNewWordsToFile(const string& dictionaryFileName, WordsContainer& newWor
 	return true;
 }
 
-bool SaveChangesToDictionary(optional <DictionaryInfo>& dictionaryArg, WordsContainer& newWords)
+bool SaveChangesToDictionary(optional <DictionaryPath>& dictionaryArg, WordsContainer& newWords)
 {
 	string word;
 	cout << "В словарь были внесены изменения. Введите Y или y для сохранения перед выходом." << endl;
@@ -207,5 +207,6 @@ bool ProcessUsersRequests(WordsContainer& dictionary, WordsContainer& newWords)
 			result = true;
 		}	
 	}
+
 	return result;
 }
