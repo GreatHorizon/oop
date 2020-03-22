@@ -1,7 +1,8 @@
 ﻿#include "stdafx.h"
 #include "dictionary.h"
-
 using namespace std;
+
+const std::string END_PROGRAMM_COMMAND = "...";
 
 optional <DictionaryInfo> parseArguments(int argc, char** argv)
 {
@@ -15,12 +16,11 @@ optional <DictionaryInfo> parseArguments(int argc, char** argv)
 	else 
 	{
 		dictionaryArg.dictionaryFileName = argv[1];
-		dictionaryArg.isDictionary = true;
 	}
 	return dictionaryArg;
 };
 
-void getTranslation(const string& word, string& translation, WordsContainer container)
+void GetTranslation(const string& word, string& translation, WordsContainer container)
 {
 	auto positions = container.equal_range(word);
 	for (auto it = positions.first ; it != positions.second; it++)
@@ -29,6 +29,7 @@ void getTranslation(const string& word, string& translation, WordsContainer cont
 		{
 			translation += ", ";
 		}
+
 		if (it->first == word)
 		{
 			translation += it->second;
@@ -40,30 +41,20 @@ void getTranslation(const string& word, string& translation, WordsContainer cont
 	}
 }
 
-bool SearchTranslation(const string& word, string& translation,
-  WordsContainer dictionary, WordsContainer newWords)
+bool SearchTranslation(const string& word, string& translation, WordsContainer dictionary)
 {
 	translation = "";
 	auto foundWordPosition = dictionary.find(word);
 
 	if (foundWordPosition != dictionary.end())
 	{
-		getTranslation(word, translation, dictionary);
+		GetTranslation(word, translation, dictionary);
+		return true;
 	}
 	else
 	{
-		foundWordPosition = newWords.find(word);
-		if (foundWordPosition != newWords.end())
-		{
-			getTranslation(word, translation, newWords);
-		}
-		else
-		{
-			return false;
-		}
+		return false;
 	}
-
-	return true;
 }
 
 bool GetDictionaryFromFile(optional <DictionaryInfo>& dictionaryArgs, WordsContainer& dictionary)
@@ -78,7 +69,7 @@ bool GetDictionaryFromFile(optional <DictionaryInfo>& dictionaryArgs, WordsConta
 	else
 	{
 		string word, translation;
-		while (!dictionaryFile.eof())
+		while (getline(dictionaryFile, word))
 		{
 			getline(dictionaryFile, translation);
 			if (!word.empty() && !translation.empty())
@@ -140,12 +131,6 @@ bool PushNewWordsToFile(const string& dictionaryFileName, WordsContainer& newWor
 	return true;
 }
 
-void GetNewFileName(optional <DictionaryInfo>& dictionaryArg)
-{
-	cout << "Введите имя нового файла для словаря" << endl;
-	cin >> dictionaryArg->dictionaryFileName;
-}
-
 bool SaveChangesToDictionary(optional <DictionaryInfo>& dictionaryArg, WordsContainer& newWords)
 {
 	string word;
@@ -153,11 +138,6 @@ bool SaveChangesToDictionary(optional <DictionaryInfo>& dictionaryArg, WordsCont
 	getline(cin, word);
 	if (word == "Y" || word == "y")
 	{	
-		if (!dictionaryArg->isDictionary)
-		{
-			GetNewFileName(dictionaryArg);
-		}
-
 		if (PushNewWordsToFile(dictionaryArg->dictionaryFileName, newWords))
 		{
 			cout << "Изменения сохранены. До свидания." << endl;
@@ -168,7 +148,6 @@ bool SaveChangesToDictionary(optional <DictionaryInfo>& dictionaryArg, WordsCont
 			return false;
 		}
 	}
-
 	else
 	{
 		cout << "Изменения не были сохранены. До свидания." << endl;
@@ -176,23 +155,27 @@ bool SaveChangesToDictionary(optional <DictionaryInfo>& dictionaryArg, WordsCont
 	}
 }
 
-void AddNewWordToTheDictionary(const string& word, WordsContainer& newWords)
+void PushWordsToDictionary(WordsContainer& newWords, const string& word,
+	string& translation, WordsContainer& dictionary)
 {
-	string translation;
-	cout << "Неизвестное слово " << "\"" << word << "\". " 
-		<< "Введите перевод или пустую строку для отказа." << endl;
+	newWords.insert(make_pair(word, translation));
+	newWords.insert(make_pair(translation, word));
+	dictionary.insert(make_pair(word, translation));
+	dictionary.insert(make_pair(translation, word));
+}
 
-	getline(cin, translation);
-
+void AddNewWordToDictionary(const string& word, string& translation,
+	WordsContainer& newWords, WordsContainer& dictionary)
+{
 	if (translation.empty())
 	{
 		cout << "Слово " << "\"" << word << "\"" << " проигнорировано."<<endl;
 	}
 	else
 	{
-		newWords.insert(make_pair(word, translation));
-		newWords.insert(make_pair(translation, word));
-		cout << "Слово " << "\"" << word << "\"" << " с переводом " <<"\""<< translation<<"\" " << "добавлено в словарь."<<endl;
+		PushWordsToDictionary(newWords, word, translation, dictionary);
+		cout << "Слово " << "\"" << word << "\"" << " с переводом " <<"\""
+			<< translation<<"\" " << "добавлено в словарь."<<endl;
 	}
 }
 
@@ -207,21 +190,22 @@ bool ProcessUsersRequests(WordsContainer& dictionary, WordsContainer& newWords)
 		if (word.empty())
 		{
 			cout << "Некорректная команда, введите слово для перевода"<<endl;
+			cout << "Или " << "..." << "для выхода из программы" << endl;
 			continue;
 		}
 
-		if (SearchTranslation(word, translation, dictionary, newWords))
+		if (SearchTranslation(word, translation, dictionary))
 		{
 			cout << translation << endl;
 		}
 		else
 		{
-			AddNewWordToTheDictionary(word, newWords);
+			cout << "Неизвестное слово " << "\"" << word << "\". "
+				<< "Введите перевод или пустую строку для отказа." << endl;
+			getline(cin, translation);
+			AddNewWordToDictionary(word, translation, newWords, dictionary);
 			result = true;
 		}	
 	}
-
 	return result;
 }
-
-
