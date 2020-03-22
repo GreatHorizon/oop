@@ -2,6 +2,6 @@
 
 #include "stdafx.h"
 
-string ReplaceString(const string& subject, const string& searchString, const string& replacementString);
+std::string ReplaceString(const std::string& subject, const std::string& searchString, const std::string& replacementString);
 
-string HtmlDecode(const string& html);
+std::string HtmlDecode(const std::string& html);

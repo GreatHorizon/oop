@@ -1,4 +1,5 @@
 #include "stdafx.h"
+using namespace std;
 
 unordered_map<string, string> entityList = {
 	{"&amp;", "&"},

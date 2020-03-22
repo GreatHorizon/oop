@@ -1,7 +1,6 @@
 ﻿using namespace std;
 #include "VectorFunctions.h"
 
-
 int main()
 {
 	vector<double> numbers = GetVector();

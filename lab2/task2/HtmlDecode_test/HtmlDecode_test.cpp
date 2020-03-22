@@ -1,8 +1,9 @@
 ﻿#define CATCH_CONFIG_MAIN
 #include "../../../catch2/catch.hpp"
 #include "..\HTMLDecode\implementation.h"
+using namespace std;
 
-TEST_CASE()
+TEST_CASE("Test HtmlDecode()")
 {
 	string required;
 	string outputString;
