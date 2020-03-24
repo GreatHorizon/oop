@@ -3,8 +3,6 @@
 
 using namespace std;
 
-const string END_PROGRAMM_COMMAND = "...";
-
 void GetTranslation(const string& word, string& translation, WordsContainer container)
 {
 	auto positions = container.equal_range(word);
@@ -119,13 +117,13 @@ bool PushNewWordsToFile(const string& dictionaryFileName, WordsContainer& newWor
 bool SaveChangesToDictionary(optional <DictionaryPath>& dictionaryArg, WordsContainer& newWords)
 {
 	string word;
-	cout << "В словарь были внесены изменения. Введите Y или y для сохранения перед выходом." << endl;
+	cout << "Dictionary was changed. Enter Y or y to save or empty string to end program." << endl;
 	getline(cin, word);
-	if (word == "Y" || word == "y")
+	if (word == LOWER_CASE_COMMAND_TO_SAVE || word == UPPER_CASE_COMMAND_TO_SAVE)
 	{	
 		if (PushNewWordsToFile(dictionaryArg->dictionaryFileName, newWords))
 		{
-			cout << "Изменения сохранены. До свидания." << endl;
+			cout << "Changes was saved. Goodbye." << endl;
 			return true;
 		}
 		else
@@ -135,7 +133,7 @@ bool SaveChangesToDictionary(optional <DictionaryPath>& dictionaryArg, WordsCont
 	}
 	else
 	{
-		cout << "Изменения не были сохранены. До свидания." << endl;
+		cout <<  "Changes was not saved. Goodbye." << endl;
 		return true;
 	}
 }
@@ -154,13 +152,13 @@ void AddNewWordToDictionary(const string& word, string& translation,
 {
 	if (translation.empty())
 	{
-		cout << "Слово " << "\"" << word << "\"" << " проигнорировано."<<endl;
+		cout << "Word " << "\"" << word << "\"" << " was ignored."<<endl;
 	}
 	else
 	{
 		PushWordsToDictionary(newWords, word, translation, dictionary);
-		cout << "Слово " << "\"" << word << "\"" << " с переводом " <<"\""
-			<< translation<<"\" " << "добавлено в словарь."<<endl;
+		cout << "Word " << "\"" << word << "\"" << " with translation " <<"\""
+			<< translation<<"\" " << "was added to the dictionary"<<endl;
 	}
 }
 
@@ -169,13 +167,13 @@ bool ProcessUsersRequests(WordsContainer& dictionary, WordsContainer& newWords)
 	string word, translation;
 	bool result = false;
 
-	cout << "Введите слово для перевода" << endl;
+	cout << "Enter word to translate" << endl;
 	while (getline(cin, word) && word != END_PROGRAMM_COMMAND)
 	{
 		if (word.empty())
 		{
-			cout << "Некорректная команда, введите слово для перевода"<<endl;
-			cout << "Или " << "..." << "для выхода из программы" << endl;
+			cout << "Invalid command, enter word to translate"<<endl;
+			cout << "Or " << "..." << "to end program" << endl;
 			continue;
 		}
 
@@ -185,8 +183,8 @@ bool ProcessUsersRequests(WordsContainer& dictionary, WordsContainer& newWords)
 		}
 		else
 		{
-			cout << "Неизвестное слово " << "\"" << word << "\". "
-				<< "Введите перевод или пустую строку для отказа." << endl;
+			cout << "Unknown word " << "\"" << word << "\". "
+				<< "Enter translation or empry string to ignore" << endl;
 			getline(cin, translation);
 			AddNewWordToDictionary(word, translation, newWords, dictionary);
 			result = true;

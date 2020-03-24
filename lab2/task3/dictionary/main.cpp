@@ -6,7 +6,7 @@ using namespace std;
 optional <DictionaryPath> parseArguments(int argc, char** argv)
 {
 	DictionaryPath dictionaryArg;
-	if (argc != 2)
+	if (argc != ARGUMENTS_COUNT)
 	{
 		cout << "Invalid arguments count" << endl;
 		cout << "Usage: <dictionaryFileName>" << endl;
@@ -21,8 +21,6 @@ optional <DictionaryPath> parseArguments(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
-	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251);
 	auto dictionaryArg = parseArguments(argc, argv);
 	WordsContainer dictionary;
 

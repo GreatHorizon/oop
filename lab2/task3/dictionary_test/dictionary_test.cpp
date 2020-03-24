@@ -6,8 +6,6 @@ using namespace std;
 
 TEST_CASE("Test SearchTranslation()")
 {
-	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251);
 	string translation;
 	WordsContainer dictionary = {
 		{ "cat", "кошка" },

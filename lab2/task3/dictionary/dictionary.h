@@ -5,6 +5,10 @@ struct DictionaryPath
 };
 
 typedef std::multimap <std::string, std::string> WordsContainer;
+const std::string END_PROGRAMM_COMMAND = "...";
+const std::string UPPER_CASE_COMMAND_TO_SAVE = "Y";
+const std::string LOWER_CASE_COMMAND_TO_SAVE = "ó";
+const int ARGUMENTS_COUNT = 2;
 
 std::optional <DictionaryPath> parseArguments(int argc, char** argv);
 bool SearchTranslation(const std::string& word, std::string& translation, WordsContainer dictionary);
