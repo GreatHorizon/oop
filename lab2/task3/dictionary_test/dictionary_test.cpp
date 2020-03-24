@@ -18,12 +18,16 @@ TEST_CASE("Test SearchTranslation()")
 	
 	SearchTranslation("dog", translation, dictionary);
 	REQUIRE(translation == "собака, пес");
+
 	SearchTranslation("snake", translation, dictionary);
 	REQUIRE(translation == "змея");
+
 	SearchTranslation("кот", translation, dictionary);
 	REQUIRE(translation == "");
+
 	SearchTranslation("snake", translation, dictionary);
 	REQUIRE(translation == "змея");
+
 	SearchTranslation("машина", translation, dictionary);
 	REQUIRE(translation == "car");
 }
