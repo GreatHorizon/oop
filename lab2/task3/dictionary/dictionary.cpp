@@ -72,19 +72,6 @@ bool GetDictionaryFromFile(optional <DictionaryPath>& dictionaryArgs, WordsConta
 	return true;
 }
 
-void RemoveDuplicate(pair<WordsContainer::iterator, WordsContainer::iterator>& positions, 
-	WordsContainer::iterator& it, WordsContainer& newWords)
-{
-	for (auto iterator = positions.first; iterator != positions.second; iterator++)
-	{
-		if (iterator->second == it->first)
-		{
-			newWords.erase(iterator);
-			break;
-		}
-	}
-}
-
 bool PushNewWordsToFile(const string& dictionaryFileName, WordsContainer& newWords)
 {
 	ofstream dictionaryFile;
@@ -100,9 +87,6 @@ bool PushNewWordsToFile(const string& dictionaryFileName, WordsContainer& newWor
 	{
 		dictionaryFile << it->first << endl;
 		dictionaryFile << it->second << endl;
-		
-		auto positions = newWords.equal_range(it->second);
-		RemoveDuplicate(positions, it, newWords);
 	}
 
 	if (!dictionaryFile.flush())
@@ -142,7 +126,6 @@ void PushWordsToDictionary(WordsContainer& newWords, const string& word,
 	string& translation, WordsContainer& dictionary)
 {
 	newWords.insert(make_pair(word, translation));
-	newWords.insert(make_pair(translation, word));
 	dictionary.insert(make_pair(word, translation));
 	dictionary.insert(make_pair(translation, word));
 }

@@ -21,6 +21,8 @@ optional <DictionaryPath> parseArguments(int argc, char** argv)
 
 int main(int argc, char** argv)
 {
+	SetConsoleCP(1251);
+	SetConsoleOutputCP(1251);
 	auto dictionaryArg = parseArguments(argc, argv);
 	WordsContainer dictionary;
 
