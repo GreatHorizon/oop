@@ -13,7 +13,7 @@ void PrintVector(const vector<double>& numbers)
 	cout << endl;
 }
 
-bool ProcessVector(std::vector<double>& numbers)
+void ProcessVector(std::vector<double>& numbers)
 {
 	if (!numbers.empty())
 	{
@@ -25,11 +25,6 @@ bool ProcessVector(std::vector<double>& numbers)
 				return (current / maxElementHalf);
 			});
 		}
-		return true;	
 	}
-	else
-	{
-		cout << "Vector should contain numbers";
-		return false;
-	}
+	
 }

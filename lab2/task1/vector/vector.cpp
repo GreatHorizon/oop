@@ -6,10 +6,7 @@ int main()
 {
 	vector<double> numbers = GetVector();
 	
-	if (!ProcessVector(numbers))
-	{
-		return 1;
-	}
+	ProcessVector(numbers);
 	sort(numbers.begin(), numbers.end());
 	PrintVector(numbers);
 
