@@ -34,8 +34,6 @@ TEST_CASE("Test SearchTranslation()")
 
 TEST_CASE("Test AddNewWordToDictionary()")
 {
-	SetConsoleCP(1251);
-	SetConsoleOutputCP(1251);
 	string translation;
 	WordsContainer newWords;
 	WordsContainer dictionary = {
