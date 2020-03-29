@@ -3,7 +3,7 @@
 #include "../vector/VectorFunctions.h"
 using namespace std;
 
-TEST_CASE("process empty vector")
+TEST_CASE("processing empty vector should change vector")
 {
 	double maxNumber = 0;
 
@@ -13,7 +13,7 @@ TEST_CASE("process empty vector")
 	CHECK(numbers == required);
 }
 
-TEST_CASE("process vector with elements equal to 0")
+TEST_CASE("should not change vector")
 {
 	vector<double> numbers;
 	vector<double> required;
@@ -25,7 +25,7 @@ TEST_CASE("process vector with elements equal to 0")
 	CHECK(numbers == required);
 }
 
-TEST_CASE("process vector with positive numbers")
+TEST_CASE("should divide all elements by 2")
 {
 	vector<double> numbers;
 	vector<double> required;
@@ -38,7 +38,7 @@ TEST_CASE("process vector with positive numbers")
 	CHECK(numbers == required);
 }
 
-TEST_CASE("process vector with negative numbers")
+TEST_CASE("should divide all elements by -1")
 {
 	vector<double> numbers;
 	vector<double> required;
@@ -51,7 +51,7 @@ TEST_CASE("process vector with negative numbers")
 	CHECK(numbers == required);
 }
 
-TEST_CASE("process vector with equal elements")
+TEST_CASE("should divide all elements by 3")
 {
 	vector<double> numbers;
 	vector<double> required;
@@ -65,7 +65,7 @@ TEST_CASE("process vector with equal elements")
 
 }
 
-TEST_CASE("process vector with float numbers")
+TEST_CASE("should divide all elements by 3.405")
 {
 	vector<double> numbers;
 	vector<double> required;
