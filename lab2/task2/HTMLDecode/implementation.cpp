@@ -2,11 +2,11 @@
 using namespace std;
 
 unordered_map<string, string> entityList = {
-	{"&amp;", "&"},
+	{"&quot;", "\""},
 	{"&apos;", "`"},
 	{"&lt;", "<"},
-	{"&gt;", ">"},
-	{"&quot;", "\""}
+	{"&gt;", ">"},	
+	{"&amp;", "&"}
 };
 
 string ReplaceString(const string& subject, const string& searchString, const string& replacementString)
