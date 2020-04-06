@@ -7,7 +7,8 @@ using namespace std;
 TEST_CASE("Test SearchTranslation()")
 {
 	string translation;
-	WordsContainer dictionary = {
+	Words words;
+	words.vocabulary = {
 		{ "cat", "кошка" },
 		{"apple", "яблоко"},
 		{ "snake", "змея"},
@@ -16,27 +17,17 @@ TEST_CASE("Test SearchTranslation()")
 		{"машина", "car"}
 	};
 	
-	SearchTranslation("dog", translation, dictionary);
-	REQUIRE(translation == "собака, пес");
-
-	SearchTranslation("snake", translation, dictionary);
-	REQUIRE(translation == "змея");
-
-	SearchTranslation("кот", translation, dictionary);
-	REQUIRE(translation == "");
-
-	SearchTranslation("snake", translation, dictionary);
-	REQUIRE(translation == "змея");
-
-	SearchTranslation("машина", translation, dictionary);
-	REQUIRE(translation == "car");
+	REQUIRE(SearchTranslation("dog", words.vocabulary).value() == "собака, пес");
+	REQUIRE(SearchTranslation("snake", words.vocabulary).value() == "змея");
+	REQUIRE(SearchTranslation("кот", words.vocabulary) == nullopt);
+	REQUIRE(SearchTranslation("apple", words.vocabulary).value() == "яблоко");
+	REQUIRE(SearchTranslation("машина", words.vocabulary).value() == "car");
 }
 
 TEST_CASE("Test AddNewWordToDictionary()")
 {
-	string translation;
-	WordsContainer newWords;
-	WordsContainer dictionary = {
+	Words words;
+	words.vocabulary = {
 		{ "cat", "кошка" },
 		{"apple", "яблоко"},
 		{ "snake", "змея"},
@@ -46,20 +37,14 @@ TEST_CASE("Test AddNewWordToDictionary()")
 	};
 
 	//Поиск перед добавлением слова "grass"
-	SearchTranslation("grass", translation, dictionary);
-	REQUIRE(translation == "");
+	REQUIRE(SearchTranslation("grass", words.vocabulary) == nullopt);
 
-	translation = "трава";
-	AddNewWordToDictionary("grass", translation , newWords, dictionary);
-	SearchTranslation("grass", translation, dictionary);
-	REQUIRE(translation == "трава");
+	AddNewWordToDictionary("grass", "трава", words);
+	REQUIRE(SearchTranslation("grass", words.vocabulary).value() == "трава");
 
 	//Поиск "cat" перед обавлением слова "кот" с переводом "cat"
-	SearchTranslation("cat", translation, dictionary);
-	REQUIRE(translation == "кошка");
+	REQUIRE(SearchTranslation("cat", words.vocabulary).value() == "кошка");
 
-	translation = "cat";
-	AddNewWordToDictionary("кот", translation, newWords, dictionary);
-	SearchTranslation("cat", translation, dictionary);
-	REQUIRE(translation == "кошка, кот");
+	AddNewWordToDictionary("кот", "cat", words);
+	REQUIRE(SearchTranslation("cat", words.vocabulary).value() == "кошка, кот");
 }

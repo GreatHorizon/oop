@@ -3,20 +3,16 @@
 
 using namespace std;
 
-optional <DictionaryPath> parseArguments(int argc, char** argv)
+optional <string> ParseArguments(int argc, char** argv)
 {
-	DictionaryPath dictionaryArg;
 	if (argc != ARGUMENTS_COUNT)
 	{
-		cout << "Invalid arguments count" << endl;
-		cout << "Usage: <dictionaryFileName>" << endl;
+		cout << "Invalid arguments count" << "\n";
+		cout << "Usage: <dictionaryFileName>" << "\n";
 		return nullopt;
 	}
-	else
-	{
-		dictionaryArg.dictionaryFileName = argv[1];
-	}
-	return dictionaryArg;
+
+	return argv[1];
 };
 
 int main(int argc, char** argv)
@@ -24,31 +20,30 @@ int main(int argc, char** argv)
 	setlocale(LC_ALL, "Russian");
 	SetConsoleCP(1251);
 	SetConsoleOutputCP(1251);
-	auto dictionaryArg = parseArguments(argc, argv);
-	WordsContainer dictionary;
+	auto dictionaryFileName = ParseArguments(argc, argv);
+	Words words;
 
-	if (!dictionaryArg)
+	if (!dictionaryFileName)
 	{
 		return 1;
 	}
 
-	if (!GetDictionaryFromFile(dictionaryArg, dictionary))
+	if (!GetDictionaryFromFile(dictionaryFileName.value(), words.vocabulary))
 	{
 		return 1;
 	}
 
-	WordsContainer newWords;
-	if (!ProcessUsersRequests(dictionary, newWords))
+	if (!ProcessUsersRequests(words))
 	{
 		return 1;
 	}
 
-	if (SaveChangesToDictionary(dictionaryArg, newWords))
+	if (SaveChangesToDictionary(dictionaryFileName.value(), words.newWords))
 	{
 		return 0;
 	}
 	else
 	{
 		return 1;
-	}
+	}	
 }

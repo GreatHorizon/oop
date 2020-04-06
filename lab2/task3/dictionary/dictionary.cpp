@@ -3,8 +3,9 @@
 
 using namespace std;
 
-void GetTranslation(const string& word, string& translation, WordsContainer container)
+string GetTranslation(const string& word, const WordsContainer& container)
 {
+	string translation;
 	auto positions = container.equal_range(word);
 	for (auto it = positions.first ; it != positions.second; it++)
 	{
@@ -12,38 +13,30 @@ void GetTranslation(const string& word, string& translation, WordsContainer cont
 		{
 			translation += ", ";
 		}
-
-		if (it->first == word)
-		{
-			translation += it->second;
-		}
-		else
-		{
-			break;
-		}
+		translation += it->second;
 	}
+
+	return translation;
 }
 
-bool SearchTranslation(const string& word, string& translation, WordsContainer dictionary)
+optional<string> SearchTranslation(const string& word, const WordsContainer& dictionary)
 {
-	translation = "";
 	auto foundWordPosition = dictionary.find(word);
 
 	if (foundWordPosition != dictionary.end())
 	{
-		GetTranslation(word, translation, dictionary);
-		return true;
+		return GetTranslation(word, dictionary);
 	}
 	else
 	{
-		return false;
+		return nullopt;
 	}
 }
 
-bool GetDictionaryFromFile(optional <DictionaryPath>& dictionaryArgs, WordsContainer& dictionary)
+bool GetDictionaryFromFile(const string& dictionaryFileName, WordsContainer& dictionary)
 {
 	ifstream dictionaryFile;
-	dictionaryFile.open(dictionaryArgs->dictionaryFileName);
+	dictionaryFile.open(dictionaryFileName);
 
 	if (!dictionaryFile.is_open())
 	{
@@ -57,57 +50,64 @@ bool GetDictionaryFromFile(optional <DictionaryPath>& dictionaryArgs, WordsConta
 			getline(dictionaryFile, translation);
 			if (!word.empty() && !translation.empty())
 			{
-				dictionary.insert(make_pair(word, translation));
-				dictionary.insert(make_pair(translation, word));
+				dictionary.emplace(word, translation);
+				dictionary.emplace(translation, word);
 			}	
 		}
 	}
 
 	if (dictionaryFile.bad())
 	{
+		cout << "There was an error while reading file" << "\n";
 		return false;
-		cout << "There was an error while reading file" << endl;
 	}
 
 	return true;
 }
 
-bool PushNewWordsToFile(const string& dictionaryFileName, WordsContainer& newWords)
+bool PushNewWordsToFile(const string& dictionaryFileName, const WordsContainer& newWords)
 {
 	ofstream dictionaryFile;
 	dictionaryFile.open(dictionaryFileName, ios::app);
 
 	if (!dictionaryFile.is_open())
 	{
-		cout << "Failed to open " << dictionaryFileName <<" for writing data." <<endl;
+		cout << "Failed to open " << dictionaryFileName <<" for writing data." << "\n";
 		return false;
 	}
 
-	for (auto it = newWords.begin(); it != newWords.end(); ++it)
+	for (const auto& [word, translation] : newWords)
 	{
-		dictionaryFile << it->first << endl;
-		dictionaryFile << it->second << endl;
+		dictionaryFile << word << "\n";
+		dictionaryFile << translation << "\n";
 	}
 
 	if (!dictionaryFile.flush())
 	{
-		cout << "Failed to write data to " << dictionaryFileName << endl;
+		cout << "Failed to write data to " << dictionaryFileName << "\n";
 		return false;
 	}
 
 	return true;
 }
 
-bool SaveChangesToDictionary(optional <DictionaryPath>& dictionaryArg, WordsContainer& newWords)
+bool SaveChangesToDictionary(string dictionaryFileName, const WordsContainer& newWords)
 {
 	string word;
-	cout << "Dictionary was changed. Enter Y or y to save or empty string to end program." << endl;
+	cout << "Dictionary was changed. Enter Y or y to save or empty string to end program." << "\n";
 	getline(cin, word);
-	if (word == LOWER_CASE_COMMAND_TO_SAVE || word == UPPER_CASE_COMMAND_TO_SAVE)
+	if (word == "Y" || word == "y")
 	{	
-		if (PushNewWordsToFile(dictionaryArg->dictionaryFileName, newWords))
+		if (dictionaryFileName.empty())
 		{
-			cout << "Changes was saved. Goodbye." << endl;
+			cout << "File name should not be empty" << "\n";
+			cout << "Enter new file name" << "\n";
+			getline(cin, dictionaryFileName);
+		}
+
+		if (PushNewWordsToFile(dictionaryFileName, newWords))
+		{
+			cout << "Changes was saved. Goodbye." << "\n";
 			return true;
 		}
 		else
@@ -117,62 +117,57 @@ bool SaveChangesToDictionary(optional <DictionaryPath>& dictionaryArg, WordsCont
 	}
 	else
 	{
-		cout <<  "Changes was not saved. Goodbye." << endl;
+		cout <<  "Changes was not saved. Goodbye." << "\n";
 		return true;
 	}
 }
 
-void PushWordsToDictionary(WordsContainer& newWords, const string& word,
-	string& translation, WordsContainer& dictionary)
+void AddNewWordToDictionary(const string& word, const string& translation, Words& words)
 {
-	newWords.insert(make_pair(word, translation));
-	dictionary.insert(make_pair(word, translation));
-	dictionary.insert(make_pair(translation, word));
+	words.newWords.emplace(word, translation);
+	words.vocabulary.emplace(word, translation);
+	words.vocabulary.emplace(translation, word);
 }
 
-void AddNewWordToDictionary(const string& word, string& translation,
-	WordsContainer& newWords, WordsContainer& dictionary)
-{
-	if (translation.empty())
-	{
-		cout << "Word " << "\"" << word << "\"" << " was ignored."<<endl;
-	}
-	else
-	{
-		PushWordsToDictionary(newWords, word, translation, dictionary);
-		cout << "Word " << "\"" << word << "\"" << " with translation " <<"\""
-			<< translation<<"\" " << "was added to the dictionary"<<endl;
-	}
-}
-
-bool ProcessUsersRequests(WordsContainer& dictionary, WordsContainer& newWords)
+bool ProcessUsersRequests(Words& words)
 {
 	string word, translation;
 	bool result = false;
 
-	cout << "Enter word to translate" << endl;
+	cout << "Enter word to translate" << "\n";
 	while (getline(cin, word) && word != END_PROGRAMM_COMMAND)
 	{
 		if (word.empty())
 		{
-			cout << "Invalid command, enter word to translate"<<endl;
-			cout << "Or " << "..." << "to end program" << endl;
+			cout << "Invalid command, enter word to translate"<< "\n";
+			cout << "Or " << END_PROGRAMM_COMMAND << " to end program" << "\n";
 			continue;
 		}
 
-		if (SearchTranslation(word, translation, dictionary))
+		auto searchResult = SearchTranslation(word, words.vocabulary);
+
+		if (!searchResult)
 		{
-			cout << translation << endl;
+			cout << "Unknown word " << "\"" << word << "\". ";
+			cout << "Enter translation or empry string to ignore" << "\n";
+			getline(cin, translation);
+
+			if (!translation.empty())
+			{
+				AddNewWordToDictionary(word, translation, words);
+				cout << "Word " << "\"" << word << "\"" << " with translation " << "\"";
+				cout << translation << "\" " << "was added to the dictionary" << "\n";
+				result = true;
+			}
+			else
+			{
+				cout << "Word " << "\"" << word << "\"" << " was ignored." << "\n";
+			}
 		}
 		else
 		{
-			cout << "Unknown word " << "\"" << word << "\". "
-				<< "Enter translation or empry string to ignore" << endl;
-			getline(cin, translation);
-			AddNewWordToDictionary(word, translation, newWords, dictionary);
-			result = true;
+			cout << searchResult.value() << "\n";
 		}	
 	}
-
 	return result;
 }
