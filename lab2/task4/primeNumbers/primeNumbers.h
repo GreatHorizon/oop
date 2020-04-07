@@ -7,4 +7,3 @@ const int ARGUMENTS_COUNT = 2;
 std::set<int> GeneratePrimeNumbersSet(int upperBound);
 void PrintSet(const std::set<int>& primeNumbers);
 std::vector<bool> GetSieve(int upperBound);
-bool CheckArgument(std::string argument, int upperBound);
