@@ -91,7 +91,7 @@ bool PushNewWordsToFile(const string& dictionaryFileName, const WordsContainer& 
 	return true;
 }
 
-bool SaveChangesToDictionary(string dictionaryFileName, const WordsContainer& newWords)
+bool SaveChangesToDictionary(string& dictionaryFileName, const WordsContainer& newWords)
 {
 	string word;
 	cout << "Dictionary was changed. Enter Y or y to save or empty string to end program." << "\n";
