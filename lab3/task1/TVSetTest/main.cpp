@@ -6,23 +6,23 @@
 
 
 /*
-Данный класс управляет формаитрованием журнала запуска тестов
-Для того, чтобы увидеть результат, приложение должно быть запущено с ключём --log-level=test_suite (см. Post-build event в настройках проекта)
+Р”Р°РЅРЅС‹Р№ РєР»Р°СЃСЃ СѓРїСЂР°РІР»СЏРµС‚ С„РѕСЂРјР°РёС‚СЂРѕРІР°РЅРёРµРј Р¶СѓСЂРЅР°Р»Р° Р·Р°РїСѓСЃРєР° С‚РµСЃС‚РѕРІ
+Р”Р»СЏ С‚РѕРіРѕ, С‡С‚РѕР±С‹ СѓРІРёРґРµС‚СЊ СЂРµР·СѓР»СЊС‚Р°С‚, РїСЂРёР»РѕР¶РµРЅРёРµ РґРѕР»Р¶РЅРѕ Р±С‹С‚СЊ Р·Р°РїСѓС‰РµРЅРѕ СЃ РєР»СЋС‡С‘Рј --log-level=test_suite (СЃРј. Post-build event РІ РЅР°СЃС‚СЂРѕР№РєР°С… РїСЂРѕРµРєС‚Р°)
 */
 class SpecLogFormatter :
 	public boost::unit_test::output::compiler_log_formatter
 {
-	virtual void test_unit_start(std::ostream& os, boost::unit_test::test_unit const& tu) override
+	virtual void test_unit_start(std::ostream &os, boost::unit_test::test_unit const& tu) override
 	{
-		// перед запуском test unit-а выводим имя test unit-а, заменяя символ подчеркивания на пробел
+		// РїРµСЂРµРґ Р·Р°РїСѓСЃРєРѕРј test unit-Р° РІС‹РІРѕРґРёРј РёРјСЏ test unit-Р°, Р·Р°РјРµРЅСЏСЏ СЃРёРјРІРѕР» РїРѕРґС‡РµСЂРєРёРІР°РЅРёСЏ РЅР° РїСЂРѕР±РµР»
 		os << std::string(m_indent, ' ') << boost::replace_all_copy(tu.p_name.get(), "_", " ") << std::endl;
-		// увеличиваем отступ для вывода имен последующих test unit-ов в виде дерева
+		// СѓРІРµР»РёС‡РёРІР°РµРј РѕС‚СЃС‚СѓРї РґР»СЏ РІС‹РІРѕРґР° РёРјРµРЅ РїРѕСЃР»РµРґСѓСЋС‰РёС… test unit-РѕРІ РІ РІРёРґРµ РґРµСЂРµРІР°
 		m_indent += 2;
 	}
 
-	virtual void test_unit_finish(std::ostream&/*os*/, boost::unit_test::test_unit const& /*tu*/, unsigned long /*elapsed*/) override
+	virtual void test_unit_finish(std::ostream &/*os*/, boost::unit_test::test_unit const& /*tu*/, unsigned long /*elapsed*/) override
 	{
-		// по окончании test unit-а уменьшаем отступ
+		// РїРѕ РѕРєРѕРЅС‡Р°РЅРёРё test unit-Р° СѓРјРµРЅСЊС€Р°РµРј РѕС‚СЃС‚СѓРї
 		m_indent -= 2;
 	}
 
@@ -31,9 +31,9 @@ class SpecLogFormatter :
 
 boost::unit_test::test_suite* init_unit_test_suite(int /*argc*/, char* /*argv*/[])
 {
-	// Заменили имя log formatter на пользовательский
+	// Р—Р°РјРµРЅРёР»Рё РёРјСЏ log formatter РЅР° РїРѕР»СЊР·РѕРІР°С‚РµР»СЊСЃРєРёР№
 	boost::unit_test::unit_test_log.set_formatter(new SpecLogFormatter);
-	// Имя корневого набора тестов - All tests
+	// РРјСЏ РєРѕСЂРЅРµРІРѕРіРѕ РЅР°Р±РѕСЂР° С‚РµСЃС‚РѕРІ - All tests
 	boost::unit_test::framework::master_test_suite().p_name.value = "All tests";
 	return 0;
 }
@@ -41,6 +41,6 @@ boost::unit_test::test_suite* init_unit_test_suite(int /*argc*/, char* /*argv*/[
 
 int main(int argc, char* argv[])
 {
-	// Запускаем тесты, передавая параметры командной строки и кастомную функцию инициализации тестов
+	// Р—Р°РїСѓСЃРєР°РµРј С‚РµСЃС‚С‹, РїРµСЂРµРґР°РІР°СЏ РїР°СЂР°РјРµС‚СЂС‹ РєРѕРјР°РЅРґРЅРѕР№ СЃС‚СЂРѕРєРё Рё РєР°СЃС‚РѕРјРЅСѓСЋ С„СѓРЅРєС†РёСЋ РёРЅРёС†РёР°Р»РёР·Р°С†РёРё С‚РµСЃС‚РѕРІ
 	return boost::unit_test::unit_test_main(&init_unit_test_suite, argc, argv);
 }
