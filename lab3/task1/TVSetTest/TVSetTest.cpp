@@ -10,27 +10,24 @@ struct TVSetFixture
 
 BOOST_FIXTURE_TEST_SUITE(TVSet, TVSetFixture)
 
-	// изначально выключен
 	BOOST_AUTO_TEST_CASE(is_turned_off_by_default)
 	{
 		BOOST_CHECK_EQUAL(tv.IsTurnedOn(), false);
 	}
 
-	// не может переключать канал в выключенном состоянии
 	BOOST_AUTO_TEST_CASE(cant_select_channel_when_turned_off)
 	{
 		tv.SelectChannel(87);	
 		BOOST_REQUIRE_EQUAL(tv.GetChannel(), 0);
 	}
 
-	//// может быть включен
 	BOOST_AUTO_TEST_CASE(can_be_turned_on)
 	{
 		tv.TurnOn();
 		BOOST_CHECK(tv.IsTurnedOn());
 	}
 
-	//// изначально отображает 0 канал
+
 	BOOST_AUTO_TEST_CASE(displays_channel_0_by_default)
 	{
 		BOOST_REQUIRE_EQUAL(tv.GetChannel(), 0);
@@ -186,7 +183,6 @@ BOOST_FIXTURE_TEST_SUITE(TVSet, TVSetFixture)
 	};
 
 	BOOST_FIXTURE_TEST_SUITE(after_subsequent_turning_on, after_subsequent_turning_on_)
-		// восстанавливает последний выбранный канал
 		BOOST_AUTO_TEST_CASE(restores_last_selected_channel)
 		{
 			BOOST_CHECK_EQUAL(tv.GetChannel(), 33);

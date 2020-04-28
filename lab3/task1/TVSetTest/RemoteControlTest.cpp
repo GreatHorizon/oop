@@ -7,9 +7,6 @@ using namespace std;
 using boost::optional;
 using boost::none;
 
-
-// «ависимости RemoteControl-а вынесены в родительскую структуру,
-// чтобы гарантировать их создание до конструировани€ самого remote-контрола
 struct RemoteControlDependencies
 {
 	CTVSet tv;
@@ -26,11 +23,8 @@ struct RemoteControlFixture : RemoteControlDependencies
 	{
 	}
 
-	// ¬спомогательна€ функци€ дл€ проверки работы команды command
-	// ќна принимает ожидаемый номер канала expectedChannel и expectedOutput
 	void VerifyCommandHandling(const string& command, const boost::optional<int>& expectedChannel, const string& expectedOutput)
 	{
-		// ѕредварительно очищаем содержимое выходного потока
 		output = stringstream();
 		input = stringstream();
 		BOOST_CHECK(input << command);
