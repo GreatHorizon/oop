@@ -3,6 +3,13 @@
 
 using namespace std;
 
+const std::map<Protocol, int> DEFAULT_PORT =
+{
+    {Protocol::HTTP, 80},
+    {Protocol::FTP, 21},
+    {Protocol::HTTPS, 443}
+};
+
 optional<Protocol> GetProtocol(string protocolName)
 {
     transform(protocolName.begin(), protocolName.end(), protocolName.begin(), tolower);
@@ -28,14 +35,14 @@ optional<Protocol> GetProtocol(string protocolName)
 optional<int> GetPort(const string& portLine, const Protocol& protocol)
 {
     int port;
-    size_t* errorPosition = new size_t;
+    size_t errorPosition;
     if (!portLine.empty())
     {
         try
         {
-            port = stoi(portLine, errorPosition, 10);
+            port = stoi(portLine, &errorPosition, 10);
         }
-        catch (exception)
+        catch (const exception&)
         {
             return nullopt;
         }
@@ -49,7 +56,7 @@ optional<int> GetPort(const string& portLine, const Protocol& protocol)
             return port;
         }
     }
-    auto defaultPort = DEFAULT_VALUES.find(protocol);
+    auto defaultPort = DEFAULT_PORT.find(protocol);
     return defaultPort->second;
 }
 

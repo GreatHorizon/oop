@@ -83,6 +83,14 @@ SCENARIO("Test GetPort()")
 				CHECK(nullopt == GetPort("0", Protocol::HTTPS));
 			}
 		}
+
+		WHEN("port is non digit value")
+		{
+			THEN("should return nullopt")
+			{
+				CHECK(nullopt == GetPort("asdas", Protocol::HTTPS));
+			}
+		}
 	}
 }
 
