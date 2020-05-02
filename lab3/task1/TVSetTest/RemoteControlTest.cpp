@@ -35,7 +35,7 @@ struct RemoteControlFixture : RemoteControlDependencies
 		BOOST_CHECK_EQUAL(output.str(), expectedOutput);
 	}
 
-	void CheckHandleCommandFunction(const string& command, bool result, const string& expectedOutput)
+	void CheckHandleCommandFunction(const string& command, bool result)
 	{
 		output = stringstream();
 		input = stringstream();
@@ -50,12 +50,12 @@ BOOST_FIXTURE_TEST_SUITE(Remote_Control, RemoteControlFixture)
 
 		BOOST_AUTO_TEST_CASE(can_handle_known_command)
 		{
-			CheckHandleCommandFunction("TurnOn", true, "TV is turned on\n");
+			CheckHandleCommandFunction("TurnOn", true);
 		}
 
 		BOOST_AUTO_TEST_CASE(cant_handle_unknown_command)
 		{
-			CheckHandleCommandFunction("SetChannel", false, "Invalid command\n");
+			CheckHandleCommandFunction("SetChannel", false);
 		}
 	BOOST_AUTO_TEST_SUITE_END()
 
