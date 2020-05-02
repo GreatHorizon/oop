@@ -54,17 +54,6 @@ int CTVSet::GetPreviousChannel() const
 	return m_previousChannel;
 }
 
-bool CTVSet::SetPreviousChannel(int channel)
-{
-	if (m_isOn)
-	{
-		m_previousChannel = channel;	
-		return true;
-	}
-
-	return false;
-}
-
 bool CTVSet::SetChannelName(int channelNumber, const std::string& channelName)
 {
 	if (m_isOn && IsChannelInRange(channelNumber))
