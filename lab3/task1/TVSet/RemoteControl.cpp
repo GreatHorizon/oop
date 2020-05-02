@@ -9,7 +9,8 @@ CRemoteControl::CRemoteControl(CTVSet& tv, std::istream& input, std::ostream& ou
 	: m_tv(tv)
 	, m_iStream(input)
 	, m_oStream(output)
-	, m_actionMap({
+	, m_actionMap(
+		{
 			{"TurnOn", bind(&CRemoteControl::TurnOn, this, _1)},
 			{"TurnOff", bind(&CRemoteControl::TurnOff, this, _1)},
 			{"Info", bind(&CRemoteControl::Info, this, _1)},
@@ -21,7 +22,7 @@ CRemoteControl::CRemoteControl(CTVSet& tv, std::istream& input, std::ostream& ou
 {	
 }
 
-bool CRemoteControl::ProcessCommand()
+bool CRemoteControl::HandleCommand()
 {
 	string consoleLine;
 	getline(m_iStream, consoleLine);

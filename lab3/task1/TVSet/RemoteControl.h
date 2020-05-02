@@ -7,7 +7,7 @@ class CTVSet;
 class CRemoteControl : boost::noncopyable
 {
 public:
-	bool ProcessCommand();
+	bool HandleCommand();
 	CRemoteControl(CTVSet& tv, std::istream& input, std::ostream& output);
 
 private:

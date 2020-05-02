@@ -11,7 +11,7 @@ int main()
 
 	while (!cin.eof())
 	{
-		if (!remoteControl.ProcessCommand())
+		if (!remoteControl.HandleCommand())
 		{
 			cout << "Invalid command\n";
 		}
