@@ -9,7 +9,7 @@ int main()
 	CTVSet tv;
 	CRemoteControl remoteControl(tv, cin, cout);
 
-	while (!cin.eof())
+	while (!cin.eof() && !cin.fail())
 	{
 		if (!remoteControl.HandleCommand())
 		{
