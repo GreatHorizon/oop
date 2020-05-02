@@ -53,7 +53,7 @@ BOOST_FIXTURE_TEST_SUITE(TVSet, TVSetFixture)
 				BOOST_CHECK(!tv.IsTurnedOn());
 			}
 
-			BOOST_AUTO_TEST_SUITE(select_channel)
+			BOOST_AUTO_TEST_SUITE(select_channel_test)
 				BOOST_AUTO_TEST_CASE(can_be_selected_channel_from_1_to_99)
 				{
 					BOOST_CHECK(tv.SelectChannel(1));
@@ -66,7 +66,7 @@ BOOST_FIXTURE_TEST_SUITE(TVSet, TVSetFixture)
 					BOOST_CHECK_EQUAL(tv.GetChannel(), 99);
 				}
 
-				BOOST_AUTO_TEST_CASE(channel_out_more_99_or_less_1_could_not_be_selected)
+				BOOST_AUTO_TEST_CASE(channel_out_of_range_could_not_be_selected)
 				{
 					BOOST_CHECK(!tv.SelectChannel(110));
 					BOOST_CHECK_EQUAL(tv.GetChannel(), 1);
@@ -76,7 +76,7 @@ BOOST_FIXTURE_TEST_SUITE(TVSet, TVSetFixture)
 				}
 			BOOST_AUTO_TEST_SUITE_END()
 
-			BOOST_AUTO_TEST_SUITE(select_previous_channel)
+			BOOST_AUTO_TEST_SUITE(select_previous_channel_test)
 
 				BOOST_AUTO_TEST_CASE(after_turning_on_previous_channel_should_be_1)
 				{
@@ -105,7 +105,7 @@ BOOST_FIXTURE_TEST_SUITE(TVSet, TVSetFixture)
 
 			BOOST_AUTO_TEST_SUITE_END()
 
-			BOOST_AUTO_TEST_SUITE(set_channel_name)
+			BOOST_AUTO_TEST_SUITE(set_channel_name_test)
 				BOOST_AUTO_TEST_CASE(set_name_for_correct_channel)
 				{
 					BOOST_CHECK(!tv.GetChannelName(35));
@@ -125,13 +125,18 @@ BOOST_FIXTURE_TEST_SUITE(TVSet, TVSetFixture)
 
 					tv.SetChannelName(35, "HBO");
 					BOOST_CHECK_EQUAL(tv.GetChannelName(35).value(), "HBO");
-
 				}
 
+				BOOST_AUTO_TEST_CASE(erase_channel_name_when_this_name_setting_for_new_channel)
+				{
+					tv.SetChannelName(35, "HBO");
+					BOOST_CHECK_EQUAL(tv.GetChannelByName("HBO").value(), 35);
+					tv.SetChannelName(12, "HBO");
+					BOOST_CHECK_EQUAL(tv.GetChannelByName("HBO").value(), 12);
+				}
 			BOOST_AUTO_TEST_SUITE_END()
 
-			
-			BOOST_AUTO_TEST_SUITE(select_channel_by_name)
+			BOOST_AUTO_TEST_SUITE(select_channel_by_name_test)
 				BOOST_AUTO_TEST_CASE(channel_could_be_selected_by_existed_name)
 				{	
 					BOOST_CHECK_EQUAL(tv.GetChannel(), 1);
@@ -152,8 +157,20 @@ BOOST_FIXTURE_TEST_SUITE(TVSet, TVSetFixture)
 				}
 
 			BOOST_AUTO_TEST_SUITE_END()
+			BOOST_AUTO_TEST_SUITE(get_channel_by_name_test)
+				BOOST_AUTO_TEST_CASE(can_get_channel_by_existed_name)
+				{
+					tv.SetChannelName(10, "HBO");
+					BOOST_CHECK_EQUAL(tv.GetChannelByName("HBO").value(), 10);
+				}
 
-			BOOST_AUTO_TEST_SUITE(delete_channel_name)
+				BOOST_AUTO_TEST_CASE(cant_get_channel_by_nonexistent_name)
+				{
+					tv.SetChannelName(10, "National Geographic");
+					BOOST_CHECK(!tv.GetChannelByName("HBO"));
+				}
+			BOOST_AUTO_TEST_SUITE_END()
+			BOOST_AUTO_TEST_SUITE(delete_channel_name_test)
 				BOOST_AUTO_TEST_CASE(existed_channel_name_could_be_deleted)
 				{
 					tv.SetChannelName(35, "National Geographic");

@@ -28,15 +28,36 @@ struct RemoteControlFixture : RemoteControlDependencies
 		output = stringstream();
 		input = stringstream();
 		BOOST_CHECK(input << command);
-		BOOST_CHECK(remoteControl.ProcessCommand());
+		BOOST_CHECK(remoteControl.HandleCommand());
 		BOOST_CHECK_EQUAL(tv.IsTurnedOn(), expectedChannel.is_initialized());
 		BOOST_CHECK_EQUAL(tv.GetChannel(), expectedChannel.get_value_or(0));
 		BOOST_CHECK(input.eof());
 		BOOST_CHECK_EQUAL(output.str(), expectedOutput);
 	}
+
+	void CheckHandleCommandFunction(const string& command, bool result, const string& expectedOutput)
+	{
+		output = stringstream();
+		input = stringstream();
+		BOOST_CHECK(input << command);
+		BOOST_CHECK_EQUAL(remoteControl.HandleCommand(), result);
+	}
 };
 
 BOOST_FIXTURE_TEST_SUITE(Remote_Control, RemoteControlFixture)
+
+	BOOST_AUTO_TEST_SUITE(handle_command_test)
+
+		BOOST_AUTO_TEST_CASE(can_handle_known_command)
+		{
+			CheckHandleCommandFunction("TurnOn", true, "TV is turned on\n");
+		}
+
+		BOOST_AUTO_TEST_CASE(cant_handle_unknown_command)
+		{
+			CheckHandleCommandFunction("SetChannel", false, "Invalid command\n");
+		}
+	BOOST_AUTO_TEST_SUITE_END()
 
 	BOOST_AUTO_TEST_CASE(can_turn_on_tv)
 	{
@@ -102,6 +123,7 @@ BOOST_FIXTURE_TEST_SUITE(Remote_Control, RemoteControlFixture)
 			tv.TurnOn();
 			VerifyCommandHandling("SetChannelName 30sasd HBO", 1, "Unknown channel\n");
 			VerifyCommandHandling("SetChannelName 99999999999 HBO", 1, "Unknown channel\n");
+			VerifyCommandHandling("SetChannelName aaa", 1, "Unknown channel\n");
 		}
 
 		BOOST_AUTO_TEST_CASE(can_set_channel_channel_name_ignoring_extra_spaces)
@@ -181,6 +203,12 @@ BOOST_FIXTURE_TEST_SUITE(Remote_Control, RemoteControlFixture)
 			tv.SetChannelName(10, "ABC");
 			VerifyCommandHandling("DeleteChannelName National Geographic", 1, "There is not channel with specified name\n");
 		}
+
+		BOOST_AUTO_TEST_CASE(cant_delete_empty_name)
+		{
+			tv.TurnOn();
+			VerifyCommandHandling("DeleteChannelName", 1, "Channel name should not be empty\n");
+		}
 	BOOST_AUTO_TEST_SUITE_END()
 
 	BOOST_AUTO_TEST_SUITE(select_previous_channel_test)
@@ -208,11 +236,6 @@ BOOST_FIXTURE_TEST_SUITE(Remote_Control, RemoteControlFixture)
 			VerifyCommandHandling("SelectPreviousChannel", 12,
 				"Previous channel - \"12\" was selected\n");
 		}
-	BOOST_AUTO_TEST_SUITE_END()
-
-	BOOST_AUTO_TEST_SUITE(convert_digit_string_into_number_test)
-
-
 	BOOST_AUTO_TEST_SUITE_END()
 BOOST_AUTO_TEST_SUITE_END()
 
