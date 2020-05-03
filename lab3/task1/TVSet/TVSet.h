@@ -10,7 +10,6 @@ public:
 	void TurnOff();
 	bool IsTurnedOn() const;
 	bool SelectChannel(int channel);
-	bool SetPreviousChannel(int channel);
 	bool SelectChannel(const std::string& channelName);
 	bool DeleteChannelName(const std::string& channelName);	
 	bool SetChannelName(int channelNumber, const std::string& channelName);
