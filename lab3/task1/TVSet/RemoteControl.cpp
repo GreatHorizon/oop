@@ -150,20 +150,20 @@ bool CRemoteControl::DeleteChannelName(std::istream& args)
 }
 
 std::optional<int> CRemoteControl::
-	ConvertDigitStringIntoNumber(std::string& channelLine) const
+	ConvertDigitStringIntoNumber(const std::string& digitLine) const
 {
 	int channel = 0;
 	size_t stoppedAt;
 	try
 	{
-		channel = stoi(channelLine, &stoppedAt, 10);
+		channel = stoi(digitLine, &stoppedAt, 10);
 	}
 	catch (const std::exception&)
 	{
 		return std::nullopt;
 	}
 
-	if (channelLine[stoppedAt] != '\0')
+	if (digitLine[stoppedAt] != '\0')
 	{
 		return std::nullopt;
 	}

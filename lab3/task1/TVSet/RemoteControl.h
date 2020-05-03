@@ -12,7 +12,7 @@ public:
 
 private:
 	void PrintChannelList() const;
-	std::optional<int> ConvertDigitStringIntoNumber(std::string& channelLine) const;
+	std::optional<int> ConvertDigitStringIntoNumber(const std::string& digitLine) const;
 	bool Info(std::istream& args) const;
 
 	bool TurnOn(std::istream& args);
