@@ -14,7 +14,6 @@ private:
 	void PrintChannelList() const;
 	std::optional<int> ConvertDigitStringIntoNumber(const std::string& digitLine) const;
 	bool Info(std::istream& args) const;
-
 	bool TurnOn(std::istream& args);
 	bool TurnOff(std::istream& args);
 	bool SelectChannel(std::istream& args);
