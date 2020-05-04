@@ -1,12 +1,10 @@
 #include "stdafx.h"
 #include "../TVSet/TVSet.h"
-#include <optional>
 
 struct TVSetFixture
 {
 	CTVSet tv;
 };
-
 
 BOOST_FIXTURE_TEST_SUITE(TVSet, TVSetFixture)
 
@@ -26,7 +24,6 @@ BOOST_FIXTURE_TEST_SUITE(TVSet, TVSetFixture)
 		tv.TurnOn();
 		BOOST_CHECK(tv.IsTurnedOn());
 	}
-
 
 	BOOST_AUTO_TEST_CASE(displays_channel_0_by_default)
 	{

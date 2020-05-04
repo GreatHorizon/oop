@@ -8,3 +8,4 @@
 #include <functional>
 #include <map>
 #include <boost/algorithm/string/trim_all.hpp>
+#include <optional>

@@ -1,6 +1,5 @@
 #include "TVSet.h"
 #include "stdafx.h"
-#include "optional"
 
 bool CTVSet::IsTurnedOn() const 
 {
