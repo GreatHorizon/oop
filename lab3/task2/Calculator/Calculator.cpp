@@ -33,6 +33,12 @@ bool CCalculator::AssignValueToVariable(const std::string& lIdentifier, const st
 	}
 
 	double assignedValue;
+	auto lVariable = m_valueMap.find(lIdentifier);
+	if (lVariable != m_valueMap.end() && lVariable->second->GetClassName() == "Function")
+	{
+		return false;
+	}
+
 	if (auto value = ConvertDigitStringIntoNumber(rValue); 
 		value)
 	{
@@ -40,10 +46,10 @@ bool CCalculator::AssignValueToVariable(const std::string& lIdentifier, const st
 	}
 	else
 	{
-		auto variable = m_valueMap.find(rValue);
-		if (variable != m_valueMap.end() && variable->second->GetValue())
+		auto rVariable = m_valueMap.find(rValue);
+		if (rVariable != m_valueMap.end() && rVariable->second->GetValue())
 		{
-			assignedValue = variable->second->GetValue().value();
+			assignedValue = rVariable->second->GetValue().value();
 		}
 		else
 		{
@@ -51,15 +57,15 @@ bool CCalculator::AssignValueToVariable(const std::string& lIdentifier, const st
 		}
 	}
 
-	if (auto variable = m_valueMap.find(lIdentifier); 
-		variable != m_valueMap.end())
+	if (lVariable != m_valueMap.end())
 	{
-		variable->second->SetValue(assignedValue);
+		lVariable->second->SetValue(assignedValue);
 	}
 	else if (IsCorrectIdentifier(lIdentifier))
 	{
 		AddVariable(lIdentifier, assignedValue, true);
 	}
+
 	return true;
 }
 
@@ -93,11 +99,21 @@ bool CCalculator::DefineFunction(const std::string& functionName,
 		}
 	}
 
+	return false;
+}
+
+bool CCalculator::DefineFunction(const std::string& functionName, const std::string& lIdentifier)
+{
+	if (DoesNameAlreadyTaken(functionName) || !IsCorrectIdentifier(functionName))
+	{
+		return false;
+	}
+
 	if (auto value = m_valueMap.find(lIdentifier);
 		value != m_valueMap.end())
 	{
-		ValueHolder* function = new Function(lIdentifier);	
-		if (auto oValue = CalculateValue(lIdentifier); 
+		ValueHolder* function = new Function(lIdentifier);
+		if (auto oValue = CalculateValue(lIdentifier);
 			oValue)
 		{
 			function->SetValue(oValue.value());
@@ -105,6 +121,7 @@ bool CCalculator::DefineFunction(const std::string& functionName,
 		m_valueMap.emplace(functionName, function);
 		return true;
 	}
+
 	return false;
 }
 
@@ -159,15 +176,11 @@ void CCalculator::UpdateFunctionValue(const std::string& identifier)
 		{
 			optional<double> currentValue = value.second->GetValue();
 			optional<double> updatedValue;
-			if (value.second->GetRightIdentifier().empty())
-			{
-				updatedValue = CalculateValue(value.second->GetLeftIdentifier());
-			}
-			else
-			{
-				updatedValue = CalculateValue(value.second->GetLeftIdentifier(),
+
+			updatedValue = value.second->GetRightIdentifier().empty() 
+				? updatedValue = CalculateValue(value.second->GetLeftIdentifier())
+				: CalculateValue(value.second->GetLeftIdentifier(),
 					value.second->GetRightIdentifier(), value.second->GetOperation());
-			}
 
 			if (!currentValue && updatedValue)
 			{

@@ -59,16 +59,11 @@ bool CCalculatorControl::DefineVariable(std::istream& args)
 
 bool CCalculatorControl::DefineFunction(std::istream& args)
 {
-	string expression, functionName, lVariable, rVariable;
+	string expression, functionName;
 	Operation operation = Operation::NONE;
 	getline(args, functionName, '=');
 	boost::trim_all(functionName);
 	getline(args, expression);
-
-	if (m_calculator.DefineFunction(functionName, expression, rVariable, operation))
-	{
-		return true;
-	}
 
 	const vector<char> operations{ '+', '-', '/', '*' };
 	auto result = std::find_first_of(expression.begin(), expression.end(),
@@ -76,18 +71,18 @@ bool CCalculatorControl::DefineFunction(std::istream& args)
 
 	if (result == expression.end())
 	{
-		lVariable = expression;
+		if (!m_calculator.DefineFunction(functionName, expression))
+		{
+			m_output << "Function cant be created\n";
+		}
 	}
 	else
 	{
-		lVariable = string(expression.begin(), result);
-		rVariable = string(result + 1, expression.end());
-		operation = ProcessOperation(*result);
-	}
-
-	if (!m_calculator.DefineFunction(functionName, lVariable, rVariable, operation))
-	{
-		m_output << "Function cant be created\n";
+		if (!m_calculator.DefineFunction(functionName, string(expression.begin(), result), 
+			string(result + 1, expression.end()), ProcessOperation(*result)))
+		{
+			m_output << "Function cant be created\n";
+		}
 	}
 
 	return true;	
@@ -122,7 +117,7 @@ bool CCalculatorControl::AssignVariable(std::istream& args)
 
 	if (!m_calculator.AssignValueToVariable(lIdentifier, rValue))
 	{
-		m_output << "Variable cant be assigned\n";
+		m_output << "Value cant be assigned\n";
 		return true;
 	}
 

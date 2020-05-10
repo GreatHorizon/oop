@@ -98,7 +98,7 @@ BOOST_FIXTURE_TEST_SUITE(CalculatorControl_test, CalculatorControlFixture)
 
 		BOOST_AUTO_TEST_CASE(cant_assign_incorrect_variable)
 		{
-			VerifyCommandHandling("let 1ch=10.2", "Variable cant be assigned\n");
+			VerifyCommandHandling("let 1ch=10.2", "Value cant be assigned\n");
 		}
 
 		BOOST_AUTO_TEST_CASE(can_assign_variable_value_to_variable)
@@ -110,13 +110,13 @@ BOOST_FIXTURE_TEST_SUITE(CalculatorControl_test, CalculatorControlFixture)
 
 		BOOST_AUTO_TEST_CASE(cant_assign_nonexistent_value_to_variable)
 		{
-			VerifyCommandHandling("let ch1=ch2", "Variable cant be assigned\n");
+			VerifyCommandHandling("let ch1=ch2", "Value cant be assigned\n");
 		}
 
 		BOOST_AUTO_TEST_CASE(cant_assign_incorrect_value_to_variable)
 		{
-			VerifyCommandHandling("let ch1=10.23a", "Variable cant be assigned\n");
-			VerifyCommandHandling("let ch1=aaa", "Variable cant be assigned\n");
+			VerifyCommandHandling("let ch1=10.23a", "Value cant be assigned\n");
+			VerifyCommandHandling("let ch1=aaa", "Value cant be assigned\n");
 		}
 	BOOST_AUTO_TEST_SUITE_END();
 

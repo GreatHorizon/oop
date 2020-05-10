@@ -48,6 +48,16 @@ BOOST_FIXTURE_TEST_SUITE(Calculator, CalculatorFixture)
 			BOOST_CHECK_EQUAL(calculator.AssignValueToVariable("ch1", "10"), true);
 		}
 
+		BOOST_AUTO_TEST_CASE(can_assign_value_to_function)
+		{
+			BOOST_CHECK_EQUAL(calculator.AddVariable("ch1"), true);
+			BOOST_CHECK_EQUAL(calculator.AddVariable("ch2"), true);
+			BOOST_CHECK_EQUAL(calculator.DefineFunction("f1", "ch1"), true);
+
+			BOOST_CHECK_EQUAL(calculator.AssignValueToVariable("f1", "10"), false);
+			BOOST_CHECK_EQUAL(calculator.AssignValueToVariable("f1", "ch1"), false);
+		}
+
 		BOOST_AUTO_TEST_CASE(can_assign_variable_value_to_variable)
 		{
 			BOOST_CHECK_EQUAL(calculator.AssignValueToVariable("ch1", "10"), true);
@@ -86,7 +96,7 @@ BOOST_FIXTURE_TEST_SUITE(Calculator, CalculatorFixture)
 			BOOST_AUTO_TEST_CASE(cant_define_function_with_undefined_variables)
 			{
 				BOOST_CHECK_EQUAL(calculator.DefineFunction("fn", "ch1", "ch2", Operation::ADDITION), false);
-				BOOST_CHECK_EQUAL(calculator.DefineFunction("fn", "ch1", "", Operation::NONE), false);
+				BOOST_CHECK_EQUAL(calculator.DefineFunction("fn", "ch1"), false);
 				auto valueMap = calculator.GetValueMap();
 				auto function = valueMap.find("f1");
 				BOOST_CHECK(function == valueMap.end());
@@ -100,14 +110,43 @@ BOOST_FIXTURE_TEST_SUITE(Calculator, CalculatorFixture)
 				BOOST_CHECK(function == valueMap.end());
 			}
 
+			BOOST_AUTO_TEST_CASE(cant_define_function_with_incorrect_arguments)
+			{
+				BOOST_CHECK_EQUAL(calculator.DefineFunction("f", "ch1", "", Operation::ADDITION), false);
+				auto valueMap = calculator.GetValueMap();
+				auto function = valueMap.find("1f");
+				BOOST_CHECK(function == valueMap.end());
+			}
+
+			BOOST_AUTO_TEST_CASE(cant_redefine_function)
+			{
+				BOOST_CHECK_EQUAL(calculator.DefineFunction("f1", "x", "y", Operation::ADDITION), true);
+				BOOST_CHECK_EQUAL(calculator.DefineFunction("f2", "x"), true);
+
+				auto valueMap = calculator.GetValueMap();
+				auto function = valueMap.find("f1");
+				BOOST_CHECK_EQUAL(function->second->GetValue().value(), 20);
+				function = valueMap.find("f2");
+				BOOST_CHECK_EQUAL(function->second->GetValue().value(), 10.55);
+
+				BOOST_CHECK_EQUAL(calculator.DefineFunction("f1", "x"), false);
+				BOOST_CHECK_EQUAL(calculator.DefineFunction("f2", "y"), false);
+
+				valueMap = calculator.GetValueMap();
+				function = valueMap.find("f1");
+				BOOST_CHECK_EQUAL(function->second->GetValue().value(), 20);
+				function = valueMap.find("f2");
+				BOOST_CHECK_EQUAL(function->second->GetValue().value(), 10.55);
+			}
+
 			BOOST_AUTO_TEST_CASE(can_define_function)
 			{
 				BOOST_CHECK_EQUAL(calculator.DefineFunction("f", "k", "m", Operation::ADDITION), true);
 				BOOST_CHECK_EQUAL(calculator.DefineFunction("f1", "x", "y", Operation::MULTIPLICATION), true);
 				BOOST_CHECK_EQUAL(calculator.DefineFunction("f2", "y", "y", Operation::MULTIPLICATION), true);
 				BOOST_CHECK_EQUAL(calculator.DefineFunction("f3", "y", "x", Operation::DIVISION), true);
-				BOOST_CHECK_EQUAL(calculator.DefineFunction("f4", "m", "", Operation::NONE), true);
-				BOOST_CHECK_EQUAL(calculator.DefineFunction("f5", "x", "", Operation::NONE), true);
+				BOOST_CHECK_EQUAL(calculator.DefineFunction("f4", "m"), true);
+				BOOST_CHECK_EQUAL(calculator.DefineFunction("f5", "x"), true);
 
 				auto valueMap = calculator.GetValueMap();
 				BOOST_CHECK(valueMap.find("f") != valueMap.end());
@@ -163,7 +202,7 @@ BOOST_FIXTURE_TEST_SUITE(Calculator, CalculatorFixture)
 
 			BOOST_AUTO_TEST_CASE(should_set_value_after_assigning_variable)
 			{
-				calculator.DefineFunction("f1", "k", "", Operation::NONE);
+				calculator.DefineFunction("f1", "k");
 				auto valueMap = calculator.GetValueMap();
 				auto function = valueMap.find("f1");
 				BOOST_CHECK(!function->second->GetValue());

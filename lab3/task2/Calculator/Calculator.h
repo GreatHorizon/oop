@@ -13,6 +13,7 @@ public:
 	bool AssignValueToVariable(const std::string& lIdentifier, const std::string& rValue);
 	bool DefineFunction(const std::string& functionName,
 		const std::string& lIdentifier, const std::string& rIdentifier, Operation operation);
+	bool DefineFunction(const std::string& functionName, const std::string& lIdentifier);
 	std::map<std::string, ValueHolder*> GetValueMap() const;
 	void UpdateFunctionValue(const std::string& identifier);
 	~CCalculator();
