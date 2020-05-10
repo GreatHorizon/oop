@@ -26,6 +26,7 @@ private:
 	std::optional<double> CalculateValue(const std::string& lIdentifier,
 		const std::string& rIdentifier, Operation operation);
 	std::optional<double> CalculateValue(const std::string& lIdentifier);
+	static const std::string FUNCTION_CLASS_NAME;
 	
 };
 

@@ -4,6 +4,7 @@
 
 using namespace std;
 using namespace std::placeholders;
+const string CCalculator::FUNCTION_CLASS_NAME = "Function";
 
 CCalculator::~CCalculator()
 {
@@ -34,7 +35,7 @@ bool CCalculator::AssignValueToVariable(const std::string& lIdentifier, const st
 
 	double assignedValue;
 	auto lVariable = m_valueMap.find(lIdentifier);
-	if (lVariable != m_valueMap.end() && lVariable->second->GetClassName() == "Function")
+	if (lVariable != m_valueMap.end() && lVariable->second->GetClassName() == FUNCTION_CLASS_NAME)
 	{
 		return false;
 	}
@@ -170,7 +171,7 @@ void CCalculator::UpdateFunctionValue(const std::string& identifier)
 {
 	for (auto value : m_valueMap)
 	{
-		if (value.second->GetClassName() == "Function" &&
+		if (value.second->GetClassName() == FUNCTION_CLASS_NAME &&
 			(value.second->GetLeftIdentifier() == identifier ||
 				value.second->GetRightIdentifier() == identifier))
 		{
