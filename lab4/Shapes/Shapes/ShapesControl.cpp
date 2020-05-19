@@ -87,8 +87,7 @@ bool ShapesControl::MakeLine(std::istream& args)
 	string xValue, yValue;
 	uint32_t color;
 
-	args >> xValue;
-	args >> yValue;
+	args >> xValue >> yValue;
 
 	auto firstCoordsPair = ParseCoords(xValue, yValue);
 	if (!firstCoordsPair)
@@ -97,8 +96,7 @@ bool ShapesControl::MakeLine(std::istream& args)
 		return true;
 	}
 
-	args >> xValue;
-	args >> yValue;
+	args >> xValue >> yValue;
 
 	auto secondCoordsPair = ParseCoords(xValue, yValue);
 	if (!secondCoordsPair)
@@ -106,7 +104,8 @@ bool ShapesControl::MakeLine(std::istream& args)
 		m_output << "Incorrect input\n";
 		return true;
 	}
-	args >> hex >> std::setw(6) >> std::setfill('0') >> color;
+
+	args >> hex >> color;
 
 	CPoint firstPoint(firstCoordsPair.value().first, firstCoordsPair.value().second);
 	CPoint secondtPoint(secondCoordsPair.value().first, secondCoordsPair.value().second);
@@ -120,8 +119,7 @@ bool ShapesControl::MakeRectangle(std::istream& args)
 {
 	string argument, xValue, yValue;
 
-	args >> xValue;
-	args >> yValue;
+	args >> xValue >> yValue;
 
 	auto coords = ParseCoords(xValue, yValue);
 	if (!coords)
@@ -148,10 +146,8 @@ bool ShapesControl::MakeRectangle(std::istream& args)
 
 	
 	uint32_t outlineColor;
-	args >> hex >> outlineColor;
-
 	uint32_t fillColor;
-	args >> hex >> fillColor;
+	args >> hex >> outlineColor >> fillColor;
 
 	CPoint leftTopPoint(coords.value().first, coords.value().second);
 	m_shapesArray.push_back(std::make_shared<CRectangle>(leftTopPoint, width.value(), 
@@ -164,8 +160,7 @@ bool ShapesControl::MakeTriangle(std::istream& args)
 {
 	string xValue, yValue;
 
-	args >> xValue;
-	args >> yValue;
+	args >> xValue >> yValue;
 
 	auto firstVertexCoords = ParseCoords(xValue, yValue);
 	if (!firstVertexCoords)
@@ -174,8 +169,7 @@ bool ShapesControl::MakeTriangle(std::istream& args)
 		return true;
 	}
 
-	args >> xValue;
-	args >> yValue;
+	args >> xValue >> yValue;
 
 	auto secondVertexCoords = ParseCoords(xValue, yValue);
 	if (!secondVertexCoords)
@@ -184,8 +178,7 @@ bool ShapesControl::MakeTriangle(std::istream& args)
 		return true;
 	}
 
-	args >> xValue;
-	args >> yValue;
+	args >> xValue >> yValue;
 
 	auto thirdVertexCoords = ParseCoords(xValue, yValue);
 	if (!thirdVertexCoords)
@@ -196,7 +189,7 @@ bool ShapesControl::MakeTriangle(std::istream& args)
 
 	uint32_t outlineColor;
 	uint32_t fillColor;
-	args >> hex >> std::setw(6) >> std::setfill('0') >> outlineColor >> fillColor;
+	args >> hex >> outlineColor >> fillColor;
 
 	CPoint vertex1(firstVertexCoords.value().first, firstVertexCoords.value().second);
 	CPoint vertex2(secondVertexCoords.value().first, secondVertexCoords.value().second);
@@ -230,10 +223,10 @@ bool ShapesControl::MakeCircle(std::istream& args)
 	uint32_t outlineColor;
 	uint32_t fillColor;
 
-	args >> hex >> std::setw(6) >> std::setfill('0') >> outlineColor >> fillColor;
+	args >> hex >> outlineColor >> fillColor;
 
 	CPoint center(centerCoords.value().first, centerCoords.value().second);
-	m_shapesArray.push_back(std::make_shared<CCircle>(center, radius.value() ,outlineColor, fillColor));
+	m_shapesArray.push_back(std::make_shared<CCircle>(center, radius.value(), outlineColor, fillColor));
 	return true;
 }
 
@@ -296,4 +289,3 @@ std::vector<std::shared_ptr<IShape>> ShapesControl::GetShapes() const
 {
 	return m_shapesArray;
 }
-
