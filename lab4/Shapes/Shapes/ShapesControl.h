@@ -1,7 +1,6 @@
 #pragma once
 #include "IShape.h"
 #include <boost/noncopyable.hpp>
-#include <optional>
 
 
 class ShapesControl final : boost::noncopyable
