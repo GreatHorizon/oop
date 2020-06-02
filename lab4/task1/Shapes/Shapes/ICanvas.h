@@ -1,8 +1,9 @@
 #pragma once
 #include "CPoint.h"
+#include "include/GLFW/glfw3.h"
 #include <cstdint>
 #include <vector>
-#include "include/GLFW/glfw3.h"
+
 
 class ICanvas
 {

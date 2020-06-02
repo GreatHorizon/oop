@@ -2,17 +2,16 @@
 #include "IShape.h"
 #include <boost/noncopyable.hpp>
 
-
 class ShapesControl final : boost::noncopyable
 {
 public:
 	ShapesControl(std::istream& input, std::ostream& output);
 	bool HandleCommand();
-	void ShowShapes();
+	void ShowShapes() const;
 
 	std::vector<std::shared_ptr <IShape>> GetShapes() const;
-	std::shared_ptr<IShape> FindMaxArea();
-	std::shared_ptr<IShape> FindMinPerimeter();
+	std::shared_ptr<IShape> FindMaxArea() const;
+	std::shared_ptr<IShape> FindMinPerimeter() const;
 
 private:
 	bool MakeLine(std::istream& args);

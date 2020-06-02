@@ -1,5 +1,5 @@
-#include "CCanvas.h"
 #include "stdafx.h"
+#include "CCanvas.h"
 #include "../lib/include/GLFW/glfw3.h"
 
 void CCanvas::DrawLine(const CPoint& firstPoint, const CPoint& secondPoint, uint32_t lineColor)

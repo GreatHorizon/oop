@@ -1,5 +1,5 @@
-#include "CLineSegment.h"
 #include "stdafx.h"
+#include "CLineSegment.h"
 #include "include/GLFW/glfw3.h"
 
 CLineSegment::CLineSegment(const CPoint& startPoint, const CPoint& endPoint, uint32_t lineColor)

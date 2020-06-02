@@ -1,5 +1,5 @@
-#include "CTriangle.h"
 #include "stdafx.h"
+#include "CTriangle.h"
 
 CPoint CTriangle::GetVertex1() const
 {

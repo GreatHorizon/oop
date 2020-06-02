@@ -230,7 +230,7 @@ bool ShapesControl::MakeCircle(std::istream& args)
 	return true;
 }
 
-std::shared_ptr<IShape> ShapesControl::FindMaxArea()
+std::shared_ptr<IShape> ShapesControl::FindMaxArea() const
 {
 	vector<double> areas;
 	for (auto shape : m_shapesArray)
@@ -243,7 +243,7 @@ std::shared_ptr<IShape> ShapesControl::FindMaxArea()
 	return m_shapesArray[maxAreaIndex];
 }
 
-std::shared_ptr<IShape> ShapesControl::FindMinPerimeter()
+std::shared_ptr<IShape> ShapesControl::FindMinPerimeter() const
 {
 	vector<double> areas;
 	for (auto shape : m_shapesArray)
@@ -256,7 +256,7 @@ std::shared_ptr<IShape> ShapesControl::FindMinPerimeter()
 	return m_shapesArray[maxAreaIndex];
 }
 
-void ShapesControl::ShowShapes()
+void ShapesControl::ShowShapes() const
 {
 	if (!glfwInit()) {
 		return;

@@ -1,6 +1,7 @@
-#include "CRectangle.h"
 #include "stdafx.h"
+#include "CRectangle.h"
 #include "CPoint.h"
+
 CPoint CRectangle::GetLeftTop() const
 {
 	return m_leftTopPoint;

@@ -3,7 +3,6 @@
 #include "CPoint.h"
 #include "ICanvas.h"
 #include <vector>
-#include "../lib/include/GLFW/glfw3.h"
 
 class CCanvas final : public ICanvas
 {

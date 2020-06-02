@@ -1,5 +1,5 @@
-#include "CCircle.h"
 #include "stdafx.h"
+#include "CCircle.h"
 
 CPoint CCircle::GetCenter() const
 {
