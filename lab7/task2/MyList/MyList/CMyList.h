@@ -22,71 +22,66 @@ class CMyList
 	};
 
 public:
+	template <typename T, bool IsConst>
 	class CIterator
 	{
+		friend class CIterator<T, true>;
 		friend CMyList;
-
-		CIterator(Node* node, bool isReversed)
+		
+		CIterator(Node* node)
 			: m_node(node)
-			, m_isReversed(isReversed)
 		{
 		}
 
 	public:
+		using MyType = CIterator<T, IsConst>;
+		using value_type = std::conditional_t<IsConst, const T, T>;
+		using reference = value_type&;
+		using pointer = value_type*;
+		using difference_type = ptrdiff_t;
+		using iterator_category = std::random_access_iterator_tag;
+
 		CIterator() = default;
 
-		CIterator& operator++()
+		MyType& operator++()
 		{
-			if (IsReversed())
+			if (!m_node->m_pNext)
 			{
-				if (!m_node->m_pPrev)
+				throw std::runtime_error("Iterator cant be incremented\n");
+			}
+
+			m_node = m_node->m_pNext.get();
+			return *this;
+		}
+
+		MyType operator++(int)
+		{
+			MyType& copy = *this;
+			++*this;
+			return copy;
+		}
+
+		MyType& operator--()
+		{
+				if (!m_node->m_pPrev->m_pPrev)
 				{
 					throw std::runtime_error("Iterator cant be incremented\n");
 				}
 
 				m_node = m_node->m_pPrev;
-			}
-			else
-			{
-				if (!m_node->m_pNext)
-				{
-					throw std::runtime_error("Iterator cant be incremented\n");
-				}
-
-				m_node = m_node->m_pNext.get();
-			}
-
-			return *this;
+				return *this;
 		}
 
-		CIterator& operator--()
+		MyType operator--(int)
 		{
-			if (IsReversed())
-			{
-				if (!m_node->m_pNext)
-				{
-					throw std::runtime_error("Iterator cant be incremented\n");
-				}
-
-				m_node = m_node->m_pNext.get();
-
-			}
-			else
-			{
-				if (!m_node->m_pPrev)
-				{
-					throw std::runtime_error("Iterator cant be incremented\n");
-				}
-
-				m_node = m_node->m_pPrev;
-			}
-
-			return *this;
+			MyType& copy = *this;
+			--*this;
+			return this;
 		}
 
-		bool operator ==(CIterator const& rightIterator)
+		bool operator==(const MyType& other) const
 		{
-			return this->m_node == rightIterator.m_node;
+			return this->m_node == other.m_node;
 		}
 
 		bool operator !=(CIterator const& rightIterator)
@@ -94,84 +89,61 @@ public:
 			return !(*this == rightIterator);
 		}
 
-		T const operator *() const
+		reference& operator *() const
 		{
 			if (!m_node->m_pPrev || !m_node->m_pNext)
 			{
 				throw std::runtime_error("Empty iterator cant be dereferenced\n");
 			}
 
-			return m_node->m_data.value();
-		}
-
-		bool IsReversed() const
-		{
-			return m_isReversed;
+			return *m_node->m_data;
 		}
 
 	private:
 		Node* m_node = nullptr;
-		bool m_isReversed;
 	};
 
-	CIterator begin()
+	using iterator = CIterator<T, false>;
+	using const_iterator = CIterator<T, true>;
+
+	iterator begin()
 	{
-		return CIterator(m_firstNode->m_pNext.get(), false);
+		return { m_firstNode->m_pNext.get()};
 	};
 
-	CIterator const begin() const
+	const_iterator begin() const
 	{
-		return CIterator(m_firstNode->m_pNext.get(), false);
+		return { m_firstNode->m_pNext.get() };
 	}
 
-	CIterator back()
+	iterator end()
 	{
-		return CIterator(m_lastNode->m_pPrev, false);
+		return { m_lastNode };
 	}
 
-	CIterator const back() const
+	const_iterator end() const
 	{
-		return CIterator(m_lastNode->m_pPrev, false);
+		return { m_lastNode };
 	}
 
-	CIterator end()
+	std::reverse_iterator<iterator> rbegin()
 	{
-		return CIterator(m_lastNode, false);
-	}
-
-	CIterator const end() const
-	{
-		return CIterator(m_lastNode, false);
-	}
-
-	CIterator rbegin()
-	{
-		return CIterator(m_lastNode->m_pPrev, true);
+		return std::reverse_iterator<iterator>(end());
 	} 
 
-	CIterator const rbegin() const
+	std::reverse_iterator<const_iterator>  rbegin() const
 	{
-		return CIterator(m_lastNode->m_pPrev, true);
+		return std::reverse_iterator<iterator>(end());
 	}
 
-	CIterator rback()
+	std::reverse_iterator<iterator> rend()
 	{
-		return CIterator(m_firstNode->m_pNext.get(), true);
+		return std::reverse_iterator<iterator>(begin());
 	}
 
-	CIterator const rback() const
+	std::reverse_iterator<const_iterator> rend() const
 	{
-		return CIterator(m_firstNode->m_pNext.get(), true);
-	}
-
-	CIterator rend()
-	{
-		return CIterator(m_firstNode.get(), true);
-	}
-
-	CIterator const rend() const
-	{
-		return CIterator(m_firstNode.get(), true);
+		return std::reverse_iterator<iterator>(begin());
 	}
 
 	size_t GetSize()
@@ -181,7 +153,7 @@ public:
 
 	T const GetBackElement() const
 	{
-		if (m_lastNode)
+		if (!IsEmpty())
 		{
 			return m_lastNode->m_pPrev->m_data.value();
 		}
@@ -191,7 +163,7 @@ public:
 
 	T const GetBeginElement() const
 	{
-		if (m_firstNode->m_pNext)
+		if (!IsEmpty())
 		{
 			return m_firstNode->m_pNext->m_data.value();
 		}
@@ -202,16 +174,15 @@ public:
 	CMyList()
 	{
 		m_firstNode = std::make_unique<Node>(std::nullopt, nullptr, nullptr);
+		m_firstNode->m_pNext = std::make_unique<Node>(std::nullopt, m_firstNode.get(), nullptr);
+		m_lastNode = m_firstNode->m_pNext.get();
 	};
 
 	~CMyList()
 	{
-		while (!IsEmpty())
-		{
-			Delete(begin());
-		}
-
+		Clear();
 		m_firstNode = nullptr;
+		m_lastNode = nullptr;
 	}
 
 	CMyList(CMyList const& list)
@@ -245,6 +216,8 @@ public:
 	{
 		if (std::addressof(list) != this)
 		{
+			Clear();
+
 			m_firstNode = std::move(list.m_firstNode);
 			m_lastNode = list.m_lastNode;
 			m_size = list.m_size;
@@ -258,22 +231,10 @@ public:
 		return *this;
 	}
 
-	void Insert(CIterator iterator, T const data)
+	void Insert(iterator it, T const data)
 	{
-		if (iterator == rend())
-		{
-			throw std::runtime_error("Invalid insert position\n");
-		}
-
-		if (IsEmpty())
-		{
-			m_firstNode->m_pNext = std::make_unique<Node>(std::nullopt, m_firstNode.get(), nullptr);
-			m_lastNode = m_firstNode->m_pNext.get();
-			iterator.m_node = m_lastNode;
-		}
-
-		auto newNode = std::make_unique<Node>(data, iterator.m_node->m_pPrev,
-			std::move(iterator.m_node->m_pPrev->m_pNext));
+		auto newNode = std::make_unique<Node>(data, it.m_node->m_pPrev,
+			std::move(it.m_node->m_pPrev->m_pNext));
 		newNode->m_pNext->m_pPrev = newNode.get();
 		newNode->m_pPrev->m_pNext = std::move(newNode);
 		m_size++;
@@ -286,35 +247,27 @@ public:
 
 	void Prepend(T data)
 	{
-		if (IsEmpty())
-		{
-			Insert(end(), data);
-		}
-		else
-		{
-			Insert(begin(), data);
-		}
+		Insert(begin(), data);
 	}
 
-	void Delete(CIterator iterator)
+	void Delete(const iterator& it)
 	{
-		if (iterator == rend() || iterator == end())
+		if (it == end())
 		{
 			throw std::runtime_error("Invalid element to be deleted\n");
 		}
 
-		if (GetSize() == 1)
-		{
-			m_firstNode->m_pNext = nullptr;
-			m_lastNode = nullptr;
-		}
-		else
-		{
-			iterator.m_node->m_pNext->m_pPrev = iterator.m_node->m_pPrev;
-			iterator.m_node->m_pPrev->m_pNext = std::move(iterator.m_node->m_pNext);
-		}
-
+		it.m_node->m_pNext->m_pPrev = it.m_node->m_pPrev;
+		it.m_node->m_pPrev->m_pNext = std::move(it.m_node->m_pNext);
 		m_size--;
+	}
+
+	void Clear()
+	{
+		while (!IsEmpty())
+		{
+			Delete(begin());
+		}
 	}
 
 	bool IsEmpty() const
