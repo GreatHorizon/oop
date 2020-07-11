@@ -15,7 +15,7 @@ public:
 	CPoint GetVertex1() const;
 	CPoint GetVertex2() const;
 	CPoint GetVertex3() const;
-	double GetAdgeLength(const CPoint& firstVertex, const CPoint& secondVertex) const;
+	double GetEdgeLength(const CPoint& firstVertex, const CPoint& secondVertex) const;
 
 	CTriangle(const CPoint& firstVertex, const CPoint& secondVertex, const CPoint& thirdVertex
 	, uint32_t fillColor, uint32_t outlineColor);

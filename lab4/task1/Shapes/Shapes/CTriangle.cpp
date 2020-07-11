@@ -23,21 +23,21 @@ uint32_t CTriangle::GetFillColor() const
 
 double CTriangle::GetArea() const
 {
-	double a = GetAdgeLength(m_vertex1, m_vertex2);
-	double b = GetAdgeLength(m_vertex3, m_vertex2);
-	double c = GetAdgeLength(m_vertex3, m_vertex1);
+	double a = GetEdgeLength(m_vertex1, m_vertex2);
+	double b = GetEdgeLength(m_vertex3, m_vertex2);
+	double c = GetEdgeLength(m_vertex3, m_vertex1);
 	double perimeterHalf = (a + b + c) /2 ;
 	return sqrt(perimeterHalf * (perimeterHalf - a) * (perimeterHalf - b) * (perimeterHalf - c));
 }
 
 double CTriangle::GetPerimeter() const
 {
-	return GetAdgeLength(m_vertex1, m_vertex2) 
-		+ GetAdgeLength(m_vertex1, m_vertex3)
-		+ GetAdgeLength(m_vertex2, m_vertex3);
+	return GetEdgeLength(m_vertex1, m_vertex2) 
+		+ GetEdgeLength(m_vertex1, m_vertex3)
+		+ GetEdgeLength(m_vertex2, m_vertex3);
 }
 
-double CTriangle::GetAdgeLength(const CPoint& firstVertex, const CPoint& secondVertex) const
+double CTriangle::GetEdgeLength(const CPoint& firstVertex, const CPoint& secondVertex) const
 {
 	return sqrt(pow(firstVertex.GetX() - secondVertex.GetX(), 2) + pow(firstVertex.GetY() - secondVertex.GetY(), 2));
 }
