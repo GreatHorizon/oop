@@ -181,8 +181,6 @@ public:
 	~CMyList()
 	{
 		Clear();
-		m_firstNode = nullptr;
-		m_lastNode = nullptr;
 	}
 
 	CMyList(CMyList const& list)
@@ -194,38 +192,39 @@ public:
 		}
 	}
 
-	CMyList(CMyList& list)
+	CMyList(CMyList&& list)
 	{
-		std::swap(list.m_firstNode, m_firstNode);
-		std::swap(list.m_lastNode, m_lastNode);
-		std::swap(list.m_size, m_size);
+		if (std::addressof(list) != this)
+		{
+			Clear();
+			std::swap(m_size, list.m_size);
+			std::swap(m_firstNode, list.m_firstNode);
+			std::swap(m_lastNode, list.m_lastNode);
+		}
 	}
 
 	CMyList& operator =(CMyList const& list)
 	{
 		if (std::addressof(list) != this)
 		{
+			Clear();
 			CMyList tempList(list);
-			std::swap(tempList, *this);
+			std::swap(m_size, tempList.m_size);
+			std::swap(m_firstNode, tempList.m_firstNode);
+			std::swap(m_lastNode, tempList.m_lastNode);
 		}
 
 		return *this;
 	}
 
-	CMyList& operator =(CMyList && list) noexcept
+	CMyList& operator =(CMyList && list)
 	{
 		if (std::addressof(list) != this)
 		{
 			Clear();
-
-			m_firstNode = std::move(list.m_firstNode);
-			m_lastNode = list.m_lastNode;
-			m_size = list.m_size;
-
-			CMyList emptyList;
-			list.m_firstNode = std::move(emptyList.m_firstNode);
-			list.m_lastNode = emptyList.m_lastNode;
-			list.m_size = emptyList.m_size;
+			std::swap(list.m_firstNode, m_firstNode);
+			std::swap(list.m_lastNode, m_lastNode);
+			std::swap(list.m_size, m_size);
 		}
 
 		return *this;
