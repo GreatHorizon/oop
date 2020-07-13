@@ -143,27 +143,27 @@ bool operator <=(const CRational& leftValue, const CRational& rightValue)
 	return (leftValue < rightValue) || (leftValue == rightValue);
 }
 
-CRational operator +(const CRational& leftValue, const CRational& rightValue)
+CRational const operator +(const CRational& leftValue, const CRational& rightValue)
 {
 	return CRational(leftValue.GetNumerator() * rightValue.GetDenominator() 
 		+ rightValue.GetNumerator() * leftValue.GetDenominator(), 
 		leftValue.GetDenominator() * rightValue.GetDenominator());
 }
 
-CRational operator -(const CRational& leftValue, const CRational& rightValue)
+CRational const operator -(const CRational& leftValue, const CRational& rightValue)
 {
 	return CRational(leftValue.GetNumerator() * rightValue.GetDenominator()
 		- rightValue.GetNumerator() * leftValue.GetDenominator(),
 		leftValue.GetDenominator() * rightValue.GetDenominator());
 }
 
-CRational operator *(const CRational& leftValue, const CRational& rightValue)
+CRational const operator *(const CRational& leftValue, const CRational& rightValue)
 {
 	return CRational(leftValue.GetNumerator() * rightValue.GetNumerator(),
 		leftValue.GetDenominator() * rightValue.GetDenominator());
 }
 
-CRational operator /(const CRational& leftValue, const CRational& rightValue)
+CRational const operator /(const CRational& leftValue, const CRational& rightValue)
 {	
 	return CRational(leftValue.GetNumerator() * rightValue.GetDenominator(),
 		leftValue.GetDenominator() * rightValue.GetNumerator());

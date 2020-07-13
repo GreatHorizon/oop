@@ -28,10 +28,10 @@ private:
 	int m_denominator;
 };
 
-CRational operator + (const CRational& leftValue, const CRational& rightValue);
-CRational operator - (const CRational& leftValue, const CRational& rightValue);
-CRational operator * (const CRational& leftValue, const CRational& rightValue);
-CRational operator / (const CRational& leftValue, const CRational& rightValue);
+CRational const operator + (const CRational& leftValue, const CRational& rightValue);
+CRational const operator - (const CRational& leftValue, const CRational& rightValue);
+CRational const operator * (const CRational& leftValue, const CRational& rightValue);
+CRational const operator / (const CRational& leftValue, const CRational& rightValue);
 
 bool operator ==(const CRational& leftValue, const CRational& rightValue);
 bool operator !=(const CRational& leftValue, const CRational& rightValue);
